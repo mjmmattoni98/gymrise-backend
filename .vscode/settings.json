@@ -1,0 +1,16 @@
+{
+    "cSpell.words": [
+        "gymrise",
+        "nestjs",
+        "prebuild",
+        "prestart"
+    ],
+    "cSpell.customDictionaries": {
+        "custom-dictionary-workspace": {
+            "name": "custom-dictionary-workspace",
+            "path": "${workspaceFolder:gymrise-server}/.cspell/custom-dictionary-workspace.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    }
+}

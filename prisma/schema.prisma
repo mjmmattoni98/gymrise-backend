@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model chat {
+  dni_trainer      String           @db.VarChar(9)
+  dni_client       String           @db.VarChar(9)
+  date_time        DateTime         @db.Timestamp(6)
+  text             String
+  client           client           @relation(fields: [dni_client], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "chat_fk_client")
+  personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "chat_fk_trainer")
+
+  @@id([dni_trainer, dni_client, date_time], map: "chat_pk")
+}
+
+model client {
+  name                    String                    @db.VarChar(40)
+  surname                 String                    @db.VarChar(40)
+  dni                     String                    @id(map: "client_pk") @db.VarChar(9)
+  password                String                    @db.VarChar(30)
+  email                   String                    @db.VarChar(40)
+  description             String
+  height                  Int
+  weight                  Int
+  sex                     sex
+  age                     Int
+  chat                    chat[]
+  contract                contract[]
+  training_session_client training_session_client[]
+}
+
+model contract {
+  id               Int              @id(map: "contract_pk") @default(autoincrement())
+  dni_trainer      String           @db.VarChar(9)
+  dni_client       String           @db.VarChar(9)
+  description      String
+  start_date       DateTime         @db.Date
+  end_date         DateTime         @db.Date
+  price            Int
+  accepted         Boolean          @default(false)
+  client           client           @relation(fields: [dni_client], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "contract_fk_client")
+  personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "contract_fk_trainer")
+}
+
+model personal_trainer {
+  name             String             @db.VarChar(40)
+  surname          String             @db.VarChar(40)
+  dni              String             @id(map: "personal_trainer_pk") @db.VarChar(9)
+  password         String             @db.VarChar(30)
+  email            String             @db.VarChar(40)
+  description      String
+  chat             chat[]
+  contract         contract[]
+  training_session training_session[]
+  training_skill   training_skill[]
+}
+
+model training_session {
+  id                      Int                      @id(map: "training_session_pk") @default(autoincrement())
+  date                    DateTime                 @db.Date
+  time                    DateTime                 @db.Time(6)
+  dni                     String                   @db.VarChar(9)
+  description             String
+  price                   Int
+  personal_trainer        personal_trainer         @relation(fields: [dni], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "training_session_fk_trainer")
+  training_session_client training_session_client?
+}
+
+model training_session_client {
+  id               Int              @id(map: "training_session_client_pk")
+  dni              String           @db.VarChar(9)
+  client           client           @relation(fields: [dni], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "training_session_client_fk_client")
+  training_session training_session @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "training_session_client_fk_session")
+}
+
+model training_skill {
+  dni              String           @db.VarChar(9)
+  skill            skill
+  personal_trainer personal_trainer @relation(fields: [dni], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "training_skills_fk")
+
+  @@id([dni, skill], map: "training_skills_pk")
+}
+
+enum sex {
+  male
+  female
+  other
+}
+
+enum skill {
+  yoga
+  calisthenics
+  pilates
+  HIIT
+  strength
+  other
+}
