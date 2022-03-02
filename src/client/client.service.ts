@@ -53,4 +53,8 @@ export class ClientService {
       where,
     });
   }
+
+  async findOne(where: Prisma.clientWhereUniqueInput) {
+    return this.prisma.client.findUnique({where});
+  }
 }

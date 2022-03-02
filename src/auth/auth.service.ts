@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ClientService } from 'src/client/client.service';
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -16,13 +17,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string): Promise<Auth> {
+  async login(dni: string, password: string): Promise<Auth> {
     const user = await this.prisma.client.findUnique({
-      where: { email: email },
+      where: { dni: dni },
     });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${email}`);
+      throw new NotFoundException(`No user found for email: ${dni}`);
     }
 
     // TODO use a library like bcrypt to hash and compare your passwords (Ya está agregada bcrypt al package.json)
@@ -34,7 +35,7 @@ export class AuthService {
     }
 
     return {
-      accessToken: this.jwtService.sign({ userId: user.id }),
+      accessToken: this.jwtService.sign({ userId: user.dni }),
     };
   }
 
@@ -45,11 +46,11 @@ export class AuthService {
     };
   }
 
-  validateUserJwt(userId: string) {
-    return this.prisma.client.findUnique({ where: { id: userId } });
+  validateUserJwt(dni: string) {
+    return this.prisma.client.findUnique({ where: { dni: dni } });
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(username: Prisma.clientWhereUniqueInput, pass: string): Promise<any> {
     const user = await this.clientService.findOne(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
