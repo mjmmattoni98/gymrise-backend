@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { client, client as ClientModel } from "@prisma/client";
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+//import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('client')
 export class ClientController {
@@ -19,7 +19,7 @@ export class ClientController {
   }
 
   @Post('user')
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async signupUser( @Body() userData: {
       name: String,
       surname: String,

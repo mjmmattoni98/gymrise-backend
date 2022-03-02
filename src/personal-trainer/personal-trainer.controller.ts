@@ -14,7 +14,7 @@ import {
   personal_trainer,
   personal_trainer as PersonalTrainerModel
 } from "@prisma/client";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+//import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller('personal-trainer')
 export class PersonalTrainerController {
@@ -23,7 +23,7 @@ export class PersonalTrainerController {
   ) {}
 
   @Post('trainer')
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   async signupUser( @Body() userData: {
     name: String,
     surname: String,

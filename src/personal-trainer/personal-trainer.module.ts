@@ -5,7 +5,7 @@ import { PersonalTrainerResolver } from './personal-trainer.resolver';
 import { PrismaService } from "../prisma.service";
 
 @Module({
-  controllers: [PersonalTrainerController],
+  //controllers: [PersonalTrainerController],
   providers: [PersonalTrainerService, PersonalTrainerResolver, PrismaService],
 })
 export class PersonalTrainerModule {}

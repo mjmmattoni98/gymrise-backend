@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ClientController } from './client/client.controller';
+//import { ClientController } from './client/client.controller';
 import { ClientModule } from './client/client.module';
 import { PersonalTrainerModule } from './personal-trainer/personal-trainer.module';
 import { ChatService } from './chat/chat.service';
@@ -30,7 +30,7 @@ import { ConfigModule } from '@nestjs/config';
   ],
   controllers: [
     AppController,
-    ClientController,
+    //ClientController,
     ContractController,
     TrainingSessionClientController,
   ],

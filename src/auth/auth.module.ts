@@ -7,6 +7,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { ClientModule } from 'src/client/client.module';
 import { LocalStrategy } from './local.strategy';
 import { PrismaService } from "../prisma.service";
+import { ClientService } from "../client/client.service";
+import { PersonalTrainerService } from "../personal-trainer/personal-trainer.service";
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { PrismaService } from "../prisma.service";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, LocalStrategy, PrismaService],
+  providers: [AuthService, JwtStrategy, LocalStrategy, PrismaService, ClientService, PersonalTrainerService],
   exports: [AuthService],
 })
 export class AuthModule {}
