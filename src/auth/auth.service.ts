@@ -54,7 +54,7 @@ export class AuthService {
     username: Prisma.clientWhereUniqueInput,
     pass: string,
   ): Promise<any> {
-    const user = await this.clientService.findOne(username);
+    const user = await this.clientService.client(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
       return result;

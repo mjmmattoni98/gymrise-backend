@@ -6,16 +6,16 @@ import { client, Prisma } from '@prisma/client';
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
-  async client(clientWhereUniqueInput: Prisma.clientWhereUniqueInput,): Promise<client | null> {
+  async client(clientWhereUniqueInput: Prisma.clientWhereUniqueInput): Promise<client | null> {
     return this.prisma.client.findUnique({ where: clientWhereUniqueInput });
   }
 
   async clients(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.clientWhereUniqueInput;
-    where?: Prisma.clientWhereInput;
-    orderBy?: Prisma.clientOrderByWithRelationInput;
+    skip?: number,
+    take?: number,
+    cursor?: Prisma.clientWhereUniqueInput,
+    where?: Prisma.clientWhereInput,
+    orderBy?: Prisma.clientOrderByWithRelationInput
   }): Promise<client[]> {
     const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.client.findMany({
@@ -28,6 +28,7 @@ export class ClientService {
   }
 
   async createClient(data: Prisma.clientCreateInput): Promise<client> {
+    if (this.prisma.client.findUnique({ where: {dni: data.dni} }) != null) return Promise.reject();
     return this.prisma.client.create({ data });
   }
 
