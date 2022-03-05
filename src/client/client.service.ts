@@ -6,12 +6,8 @@ import { client, Prisma } from '@prisma/client';
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
-  async client(
-    clientWhereUniqueInput: Prisma.clientWhereUniqueInput,
-  ): Promise<client | null> {
-    return this.prisma.client.findUnique({
-      where: clientWhereUniqueInput,
-    });
+  async client(clientWhereUniqueInput: Prisma.clientWhereUniqueInput,): Promise<client | null> {
+    return this.prisma.client.findUnique({ where: clientWhereUniqueInput });
   }
 
   async clients(params: {
@@ -27,34 +23,23 @@ export class ClientService {
       take,
       cursor,
       where,
-      orderBy,
+      orderBy
     });
   }
 
   async createClient(data: Prisma.clientCreateInput): Promise<client> {
-    return this.prisma.client.create({
-      data,
-    });
+    return this.prisma.client.create({ data });
   }
 
   async updateClient(params: {
-    where: Prisma.clientWhereUniqueInput;
-    data: Prisma.clientUpdateInput;
+    where: Prisma.clientWhereUniqueInput,
+    data: Prisma.clientUpdateInput
   }): Promise<client> {
     const { where, data } = params;
-    return this.prisma.client.update({
-      data,
-      where,
-    });
+    return this.prisma.client.update({ data, where });
   }
 
   async deleteUser(where: Prisma.clientWhereUniqueInput): Promise<client> {
-    return this.prisma.client.delete({
-      where,
-    });
-  }
-
-  async findOne(where: Prisma.clientWhereUniqueInput) {
-    return this.prisma.client.findUnique({where});
+    return this.prisma.client.delete({ where });
   }
 }

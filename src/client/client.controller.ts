@@ -9,28 +9,28 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
-import { client, client as ClientModel } from "@prisma/client";
-//import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { client as ClientModel, sex } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ChatModule } from 'src/chat/chat.module';
 
 @Controller('client')
 export class ClientController {
-  constructor(private readonly clientService: ClientService, private Client: client) {
-
-  }
+  constructor(private readonly clientService: ClientService) {}
 
   @Post('user')
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async signupUser( @Body() userData: {
-      name: String,
-      surname: String,
-      dni: String,
-      password: String,
+      name: string,
+      surname: string,
+      dni: string,
+      password: string,
       email: string,
       description: string,
       height: number,
-
-
+      weight: number,
+      sex: sex,
+      age: number
     } ): Promise<ClientModel> {
-    return this.clientService.createClient(this.Client);
+    return this.clientService.createClient(userData);
   }
 }
