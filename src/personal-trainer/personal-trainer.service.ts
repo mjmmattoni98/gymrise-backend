@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { personal_trainer, Prisma } from '@prisma/client';
+import { ClientCreationError } from "../client/client.service";
+
+export enum PersonalTrainerCreationError {
+  PersonalTrainerAlreadySignedUp
+}
 
 @Injectable()
 export class PersonalTrainerService {
@@ -31,12 +36,12 @@ export class PersonalTrainerService {
     });
   }
 
-  async createPersonalTrainer(
-    data: Prisma.personal_trainerCreateInput,
-  ): Promise<personal_trainer> {
-    return this.prisma.personal_trainer.create({
-      data,
-    });
+  async createPersonalTrainer(data: Prisma.personal_trainerCreateInput): Promise<personal_trainer> {
+    const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({ where: {dni: data.dni} });
+    if (foundPersonalTrainer != null) {
+      throw PersonalTrainerCreationError.PersonalTrainerAlreadySignedUp;
+    }
+    return this.prisma.personal_trainer.create({ data });
   }
 
   async updatePersonalTrainer(params: {

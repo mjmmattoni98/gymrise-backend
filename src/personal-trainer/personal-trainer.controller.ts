@@ -5,90 +5,29 @@ import {
   Post,
   Body,
   Put,
-  Delete, UseGuards
+  Delete, UseGuards, HttpException, HttpStatus
 } from "@nestjs/common";
 import { PersonalTrainerService } from './personal-trainer.service';
-import {
-  client,
-  client as ClientModel,
-  personal_trainer,
-  personal_trainer as PersonalTrainerModel
-} from "@prisma/client";
-//import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { PersonalTrainerCreationError } from "../personal-trainer/personal-trainer.service";
+import { PersonalTrainerDto } from './dto/personalTrainer.dto';
+import { personal_trainer as PersonalTrainerModel} from '@prisma/client';
 
 @Controller('personal-trainer')
 export class PersonalTrainerController {
-  constructor(
-    private readonly personalTrainerService: PersonalTrainerService, private personalTrainer: personal_trainer
-  ) {}
+  constructor(private readonly personalTrainerService: PersonalTrainerService) {}
 
   @Post('trainer')
-  //@UseGuards(JwtAuthGuard)
-  async signupUser( @Body() userData: {
-    name: String,
-    surname: String,
-    dni: String,
-    password: String,
-    email: string,
-    description: string,
-
-  } ): Promise<PersonalTrainerModel> {
-    return this.personalTrainerService.createPersonalTrainer(this.personalTrainer);
+  async signupTrainer( @Body() trainerData: PersonalTrainerDto): Promise<PersonalTrainerModel>
+  {
+    try {
+      return await this.personalTrainerService.createPersonalTrainer(trainerData);
+    } catch (error) {
+      switch (error) {
+        case PersonalTrainerCreationError.PersonalTrainerAlreadySignedUp:
+          throw new HttpException("Personal trainer has already signed up", HttpStatus.BAD_REQUEST);
+        default:
+          throw error;
+      }
+    }
   }
-  /*@Get('post/:id')
-  async getPostById(@Param('id') id: string): Promise<PersonalTrainerModel> {
-    return this.personalTrainerService.personalTrainer({ id: Number(id) });
-  }
-
-  @Get('feed')
-  async getPublishedPosts(): Promise<PersonalTrainerModel[]> {
-    return this.personalTrainerService.personalTrainers({
-      where: { published: true },
-    });
-  }
-
-  @Get('filtered-posts/:searchString')
-  async getFilteredPosts(
-    @Param('searchString') searchString: string,
-  ): Promise<PersonalTrainerModel[]> {
-    return this.personalTrainerService.personalTrainers({
-      where: {
-        OR: [
-          {
-            title: { contains: searchString },
-          },
-          {
-            content: { contains: searchString },
-          },
-        ],
-      },
-    });
-  }
-
-  @Post('post')
-  async createDraft(
-    @Body() postData: { title: string; content?: string; authorEmail: string },
-  ): Promise<PersonalTrainerModel> {
-    const { title, content, authorEmail } = postData;
-    return this.personalTrainerService.createPersonalTrainer({
-      title,
-      content,
-      author: {
-        connect: { email: authorEmail },
-      },
-    });
-  }
-
-  @Put('publish/:id')
-  async publishPost(@Param('id') id: string): Promise<PersonalTrainerModel> {
-    return this.personalTrainerService.updatePersonalTrainer({
-      where: { id: Number(id) },
-      data: { published: true },
-    });
-  }
-
-  @Delete('post/:id')
-  async deletePost(@Param('id') id: string): Promise<PersonalTrainerModel> {
-    return this.personalTrainerService.deletePersonalTrainer({ id: Number(id) });
-  }*/
 }
