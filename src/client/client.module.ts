@@ -6,7 +6,8 @@ import { PersonalTrainerController } from "../personal-trainer/personal-trainer.
 import { ClientController } from "./client.controller";
 
 @Module({
-  //controllers: [ClientController],
+  controllers: [ClientController],
   providers: [ClientService, ClientResolver, PrismaService],
+  exports: [ClientService]
 })
 export class ClientModule {}
