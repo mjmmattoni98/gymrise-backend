@@ -7,30 +7,33 @@ import {
   Put,
   Delete,
   UseGuards,
+  ConsoleLogger,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { ClientService } from './client.service';
+import { ClientCreationError, ClientService } from './client.service';
 import { client as ClientModel, sex } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ChatModule } from 'src/chat/chat.module';
+import { ClientDto } from './dto/client.dto';
 
 @Controller('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Post('user')
-  @UseGuards(JwtAuthGuard)
-  async signupUser( @Body() userData: {
-      name: string,
-      surname: string,
-      dni: string,
-      password: string,
-      email: string,
-      description: string,
-      height: number,
-      weight: number,
-      sex: sex,
-      age: number
-    } ): Promise<ClientModel> {
-    return this.clientService.createClient(userData);
+  //@UseGuards(JwtAuthGuard)
+  async signupUser( @Body() userData: ClientDto ): Promise<ClientModel> 
+  {
+    try {
+      return await this.clientService.createClient(userData);
+    } catch (error) {
+      switch (error) {
+        case ClientCreationError.ClientAlreadySignedUp:
+          throw new HttpException("Client has already signed up", HttpStatus.BAD_REQUEST);
+        default:
+          throw error;
+      }
+    }
   }
 }

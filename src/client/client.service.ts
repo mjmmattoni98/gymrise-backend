@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { client, Prisma } from '@prisma/client';
 
+export enum ClientCreationError {
+  ClientAlreadySignedUp
+}
+
 @Injectable()
 export class ClientService {
   constructor(private prisma: PrismaService) {}
@@ -28,7 +32,10 @@ export class ClientService {
   }
 
   async createClient(data: Prisma.clientCreateInput): Promise<client> {
-    if (this.prisma.client.findUnique({ where: {dni: data.dni} }) != null) return Promise.reject();
+    const foundClient = await this.prisma.client.findUnique({ where: {dni: data.dni} });
+    if (foundClient != null) {
+      throw ClientCreationError.ClientAlreadySignedUp;
+    }
     return this.prisma.client.create({ data });
   }
 
