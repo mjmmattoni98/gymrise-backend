@@ -23,7 +23,7 @@ model client {
   surname                 String                    @db.VarChar(40)
   dni                     String                    @id(map: "client_pk") @db.VarChar(9)
   password                String                    @db.VarChar(30)
-  email                   String                    @db.VarChar(40)
+  email                   String                    @unique @db.VarChar(40)
   description             String
   height                  Int
   weight                  Int
@@ -52,7 +52,7 @@ model personal_trainer {
   surname          String             @db.VarChar(40)
   dni              String             @id(map: "personal_trainer_pk") @db.VarChar(9)
   password         String             @db.VarChar(30)
-  email            String             @db.VarChar(40)
+  email            String             @unique @db.VarChar(40)
   description      String
   chat             chat[]
   contract         contract[]
