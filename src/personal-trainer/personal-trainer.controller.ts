@@ -8,9 +8,9 @@ import {
   Delete, UseGuards, HttpException, HttpStatus
 } from "@nestjs/common";
 import { PersonalTrainerService } from './personal-trainer.service';
-import { PersonalTrainerCreationError } from "../personal-trainer/personal-trainer.service";
+import { PersonalTrainerCreationError } from "./personal-trainer.service";
 import { PersonalTrainerDto } from './dto/personalTrainer.dto';
-import { personal_trainer as PersonalTrainerModel} from '@prisma/client';
+import { client as ClientModel, personal_trainer as PersonalTrainerModel } from "@prisma/client";
 
 @Controller('personal-trainer')
 export class PersonalTrainerController {
@@ -30,4 +30,16 @@ export class PersonalTrainerController {
       }
     }
   }
+
+  @Delete('trainer')
+  async cancelTrainerAccount( @Body() trainerData: PersonalTrainerDto ): Promise<PersonalTrainerModel> {
+
+    try {
+      return await this.personalTrainerService.deletePersonalTrainer(trainerData);
+    } catch (error) {
+      throw new Error("Error while deleting the personal trainer account");
+    }
+
+  }
+
 }

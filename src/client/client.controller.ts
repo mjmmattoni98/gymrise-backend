@@ -36,4 +36,16 @@ export class ClientController {
       }
     }
   }
+
+  @Delete('user')
+  async cancelAccount( @Body() userData: ClientDto ): Promise<ClientModel> {
+
+    try {
+      return await this.clientService.deleteUser(userData);
+    } catch (error) {
+      throw new Error("Error while deleting an acocunt");
+    }
+
+  }
+
 }
