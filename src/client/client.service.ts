@@ -3,25 +3,27 @@ import { PrismaService } from '../prisma.service';
 import { client, Prisma } from '@prisma/client';
 
 export enum ClientCreationError {
-  ClientAlreadySignedUp,
+  ClientAlreadySignedUp
+}
+
+export enum ClientUpdateError {
+  ClientDoesntExist
 }
 
 @Injectable()
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
-  async client(
-    clientWhereUniqueInput: Prisma.clientWhereUniqueInput,
-  ): Promise<client | null> {
+  async client(clientWhereUniqueInput: Prisma.clientWhereUniqueInput): Promise<client | null> {
     return this.prisma.client.findUnique({ where: clientWhereUniqueInput });
   }
 
   async clients(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.clientWhereUniqueInput;
-    where?: Prisma.clientWhereInput;
-    orderBy?: Prisma.clientOrderByWithRelationInput;
+    skip?: number,
+    take?: number,
+    cursor?: Prisma.clientWhereUniqueInput,
+    where?: Prisma.clientWhereInput,
+    orderBy?: Prisma.clientOrderByWithRelationInput
   }): Promise<client[]> {
     const { skip, take, cursor, where, orderBy } = params;
     return this.prisma.client.findMany({
@@ -29,25 +31,24 @@ export class ClientService {
       take,
       cursor,
       where,
-      orderBy,
+      orderBy
     });
   }
 
   async createClient(data: Prisma.clientCreateInput): Promise<client> {
-    const foundClient = await this.prisma.client.findUnique({
-      where: { dni: data.dni },
-    });
+    const foundClient = await this.prisma.client.findUnique({ where: {dni: data.dni} });
     if (foundClient != null) {
       throw ClientCreationError.ClientAlreadySignedUp;
     }
     return this.prisma.client.create({ data });
   }
 
-  async updateClient(params: {
-    where: Prisma.clientWhereUniqueInput;
-    data: Prisma.clientUpdateInput;
-  }): Promise<client> {
+  async updateClient(params: { where: Prisma.clientWhereUniqueInput, data: Prisma.clientUpdateInput }): Promise<client> {
     const { where, data } = params;
+    const foundClient = await this.prisma.client.findUnique({ where: {dni: where.dni} });
+    if (foundClient == null) {
+      throw ClientUpdateError.ClientDoesntExist;
+    }
     return this.prisma.client.update({ data, where });
   }
 
