@@ -12,7 +12,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ClientCreationError, ClientService, ClientUpdateError } from './client.service';
-import { client as ClientModel, Prisma, sex } from '@prisma/client';
+import { client as ClientModel } from "@prisma/client";
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ChatModule } from 'src/chat/chat.module';
 import { ClientDto } from './dto/client.dto';
@@ -39,10 +39,11 @@ export class ClientController {
 
   @Put("update/:dni")
   //@UseGuards(JwtAuthGuard)
-  async updateUser( @Param() dni:string, @Body() userData: ClientDto ): Promise<ClientModel>
+  async updateUser( @Param ('dni') dni: string,
+                    @Body() clientData: ClientDto ): Promise<ClientModel>
   {
     try {
-      return await this.clientService.updateClient({where: dni as Prisma.clientWhereUniqueInput, data: userData});
+      return await this.clientService.updateClient({dni, data: clientData});
     } catch (error) {
       switch (error) {
         case ClientUpdateError.ClientDoesntExist:
@@ -53,15 +54,24 @@ export class ClientController {
     }
   }
 
-  @Delete('user')
-  async cancelAccount( @Body() userData: ClientDto ): Promise<ClientModel> {
+  @Delete('delete/:dni')
+  async cancelAccount( @Param ('dni') dni: string ): Promise<ClientModel> {
 
     try {
-      return await this.clientService.deleteUser(userData);
+      return await this.clientService.deleteClient(dni);
     } catch (error) {
       throw new Error("Error while deleting an acocunt");
     }
 
+  }
+
+  @Get(':dni')
+  async getClient(@Param ('dni') dni: string): Promise<ClientModel> {
+    try{
+      return await this.clientService.getClient(dni)
+    }catch (error){
+      throw new Error("Error while getting the client account")
+    }
   }
 
 }
