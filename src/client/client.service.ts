@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { client, Prisma } from '@prisma/client';
+import { client, personal_trainer, Prisma } from "@prisma/client";
 
 export enum ClientCreationError {
   ClientAlreadySignedUp
@@ -43,7 +43,30 @@ export class ClientService {
     return this.prisma.client.create({ data });
   }
 
-  async updateClient(params: { where: Prisma.clientWhereUniqueInput, data: Prisma.clientUpdateInput }): Promise<client> {
+  async updateClient(params: {
+    dni: string;
+    data: Prisma.clientUpdateInput;
+  }): Promise<client> {
+    const { data, dni } = params;
+    return this.prisma.client.update({
+      data: data,
+      where: {dni: dni},
+    });
+  }
+
+  async deleteClient(
+    dni: string,
+  ): Promise<client> {
+    return this.prisma.client.delete({ where : {dni: dni} });
+  }
+
+  async getClient(
+    dni: string,
+  ): Promise<client> {
+    //console.log(where)
+    return this.prisma.client.findUnique({ where:{dni: dni}});
+  }
+/*  async updateClient(params: { where: Prisma.clientWhereUniqueInput, data: Prisma.clientUpdateInput }): Promise<client> {
     const { where, data } = params;
     const foundClient = await this.prisma.client.findUnique({ where: {dni: where.dni} });
     if (foundClient == null) {
@@ -54,5 +77,5 @@ export class ClientService {
 
   async deleteUser(where: Prisma.clientWhereUniqueInput): Promise<client> {
     return this.prisma.client.delete({ where });
-  }
+  }*/
 }
