@@ -35,7 +35,7 @@ export class PersonalTrainerController {
   async deleteTrainerAccount( @Param ('dni') dni: string ): Promise<PersonalTrainerModel> {
 
     try {
-      return await this.personalTrainerService.deletePersonalTrainer(dni as Prisma.personal_trainerWhereUniqueInput);
+      return await this.personalTrainerService.deletePersonalTrainer(dni);
     } catch (error) {
       throw new Error("Error while deleting the personal trainer account");
     }
@@ -46,8 +46,7 @@ export class PersonalTrainerController {
   async updateTrainerAccount(@Param ('dni') dni: string,
                              @Body() trainerData: PersonalTrainerDto ): Promise<PersonalTrainerModel> {
     try{
-      return await this.personalTrainerService.updatePersonalTrainer({where:dni as Prisma.personal_trainerWhereUniqueInput
-        , data:trainerData})
+      return await this.personalTrainerService.updatePersonalTrainer({dni, data:trainerData})
     }catch (error){
       throw new Error("Error while updating the personal trainer account")
     }
@@ -56,9 +55,9 @@ export class PersonalTrainerController {
   @Get(':dni')
   async getTrainerAccount(@Param ('dni') dni: string): Promise<PersonalTrainerModel> {
     try{
-      return await this.personalTrainerService.getPersonalTrainer(dni as Prisma.personal_trainerWhereUniqueInput)
+      return await this.personalTrainerService.getPersonalTrainer(dni)
     }catch (error){
-      throw new Error("Error while updating the personal trainer account")
+      throw new Error("Error while getting the personal trainer account")
     }
   }
 }
