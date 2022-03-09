@@ -50,16 +50,22 @@ export class PersonalTrainerService {
   }): Promise<personal_trainer> {
     const { data, where } = params;
     return this.prisma.personal_trainer.update({
-      data,
-      where,
+      data: data,
+      where: where,
     });
   }
 
   async deletePersonalTrainer(
     where: Prisma.personal_trainerWhereUniqueInput,
   ): Promise<personal_trainer> {
-    return this.prisma.personal_trainer.delete({
-      where,
-    });
+    //console.log(where)
+    return this.prisma.personal_trainer.delete({ where });
+  }
+
+  async getPersonalTrainer(
+    where: Prisma.personal_trainerWhereUniqueInput,
+  ): Promise<personal_trainer> {
+    //console.log(where)
+    return this.prisma.personal_trainer.findUnique({ where });
   }
 }

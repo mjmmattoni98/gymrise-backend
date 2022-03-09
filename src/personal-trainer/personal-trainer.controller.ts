@@ -32,7 +32,7 @@ export class PersonalTrainerController {
   }
 
   @Delete('delete/:dni')
-  async cancelTrainerAccount( @Param ('dni') dni: string ): Promise<PersonalTrainerModel> {
+  async deleteTrainerAccount( @Param ('dni') dni: string ): Promise<PersonalTrainerModel> {
 
     try {
       return await this.personalTrainerService.deletePersonalTrainer(dni as Prisma.personal_trainerWhereUniqueInput);
@@ -48,6 +48,15 @@ export class PersonalTrainerController {
     try{
       return await this.personalTrainerService.updatePersonalTrainer({where:dni as Prisma.personal_trainerWhereUniqueInput
         , data:trainerData})
+    }catch (error){
+      throw new Error("Error while updating the personal trainer account")
+    }
+  }
+
+  @Get(':dni')
+  async getTrainerAccount(@Param ('dni') dni: string): Promise<PersonalTrainerModel> {
+    try{
+      return await this.personalTrainerService.getPersonalTrainer(dni as Prisma.personal_trainerWhereUniqueInput)
     }catch (error){
       throw new Error("Error while updating the personal trainer account")
     }
