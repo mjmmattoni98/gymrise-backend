@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from '../prisma.service';
 import { client, personal_trainer, Prisma } from "@prisma/client";
 
@@ -18,21 +18,8 @@ export class ClientService {
     return this.prisma.client.findUnique({ where: clientWhereUniqueInput });
   }
 
-  async clients(params: {
-    skip?: number,
-    take?: number,
-    cursor?: Prisma.clientWhereUniqueInput,
-    where?: Prisma.clientWhereInput,
-    orderBy?: Prisma.clientOrderByWithRelationInput
-  }): Promise<client[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.client.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy
-    });
+  async clients(): Promise<client[]> {
+    return this.prisma.client.findMany();
   }
 
   async createClient(data: Prisma.clientCreateInput): Promise<client> {

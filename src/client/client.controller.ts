@@ -69,8 +69,17 @@ export class ClientController {
   async getClient(@Param ('dni') dni: string): Promise<ClientModel> {
     try{
       return await this.clientService.getClient(dni)
-    }catch (error){
+    } catch (error){
       throw new Error("Error while getting the client account")
+    }
+  }
+
+  @Get()
+  async getAllClients(): Promise<ClientModel[]> {
+    try{
+      return await this.clientService.clients();
+    } catch (error){
+      throw new Error("Error while getting all clients")
     }
   }
 

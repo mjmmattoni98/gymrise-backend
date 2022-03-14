@@ -47,7 +47,7 @@ export class PersonalTrainerController {
                              @Body() trainerData: PersonalTrainerDto ): Promise<PersonalTrainerModel> {
     try{
       return await this.personalTrainerService.updatePersonalTrainer({dni, data:trainerData})
-    }catch (error){
+    } catch (error) {
       throw new Error("Error while updating the personal trainer account")
     }
   }
@@ -56,8 +56,17 @@ export class PersonalTrainerController {
   async getTrainerAccount(@Param ('dni') dni: string): Promise<PersonalTrainerModel> {
     try{
       return await this.personalTrainerService.getPersonalTrainer(dni)
-    }catch (error){
+    } catch (error) {
       throw new Error("Error while getting the personal trainer account")
+    }
+  }
+
+  @Get()
+  async getAllTrainers(): Promise<PersonalTrainerModel[]> {
+    try{
+      return await this.personalTrainerService.personalTrainers();
+    } catch (error) {
+      throw new Error("Error while getting all the trainers")
     }
   }
 }

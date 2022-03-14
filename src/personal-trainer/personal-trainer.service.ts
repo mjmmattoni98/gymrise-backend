@@ -19,21 +19,8 @@ export class PersonalTrainerService {
     });
   }
 
-  async personalTrainers(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.personal_trainerWhereUniqueInput;
-    where?: Prisma.personal_trainerWhereInput;
-    orderBy?: Prisma.personal_trainerOrderByWithRelationInput;
-  }): Promise<personal_trainer[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.personal_trainer.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+  async personalTrainers(): Promise<personal_trainer[]> {
+    return this.prisma.personal_trainer.findMany();
   }
 
   async createPersonalTrainer(data: Prisma.personal_trainerCreateInput): Promise<personal_trainer> {
