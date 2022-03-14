@@ -5,7 +5,7 @@ CREATE TABLE personal_trainer (
     name VARCHAR(40) NOT NULL,
     surname VARCHAR(40) NOT NULL,
     dni VARCHAR(9) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    password TEXT NOT NULL,
     email VARCHAR(40) NOT NULL UNIQUE,
     description TEXT NOT NULL,
     CONSTRAINT personal_trainer_pk PRIMARY KEY (dni)
@@ -22,7 +22,7 @@ CREATE TABLE client (
     name VARCHAR(40) NOT NULL,
     surname VARCHAR(40) NOT NULL,
     dni VARCHAR(9) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    password TEXT NOT NULL,
     email VARCHAR(40) NOT NULL UNIQUE,
     description TEXT NOT NULL,
     height INTEGER NOT NULL,
