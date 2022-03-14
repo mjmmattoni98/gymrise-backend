@@ -5,41 +5,41 @@ import { IsNotEmpty } from 'class-validator';
 export class ClientDto {
   @IsNotEmpty()
   @ApiProperty()
-  name: string
-  
+  name: string;
+
   @IsNotEmpty()
   @ApiProperty()
-  surname: string
-  
+  surname: string;
+
   @IsNotEmpty()
   @ApiProperty()
-  dni: string
-  
+  dni: string;
+
   @IsNotEmpty()
   @ApiProperty()
-  password: string
-  
+  password: string;
+
   @IsNotEmpty()
   @ApiProperty()
-  email: string
-  
+  email: string;
+
   @IsNotEmpty()
   @ApiProperty()
-  description: string
-  
+  description: string;
+
   @IsNotEmpty()
   @ApiProperty()
-  height: number
-  
+  height: number;
+
   @IsNotEmpty()
   @ApiProperty()
-  weight: number
-  
+  weight: number;
+
   @IsNotEmpty()
   @ApiProperty()
-  sex: sex
-  
+  sex: sex;
+
   @IsNotEmpty()
   @ApiProperty()
-  age: number
+  age: number;
 }

@@ -4,25 +4,25 @@ import { IsNotEmpty } from 'class-validator';
 export class PersonalTrainerDto {
   @IsNotEmpty()
   @ApiProperty()
-  name: string
+  name: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  surname: string
+  surname: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  dni: string
+  dni: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  password: string
+  password: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  email: string
+  email: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  description: string
+  description: string;
 }

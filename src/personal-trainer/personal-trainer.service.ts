@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { personal_trainer, Prisma } from '@prisma/client';
-import { ClientCreationError } from "../client/client.service";
+import { ClientCreationError } from '../client/client.service';
 
 export enum PersonalTrainerCreationError {
-  PersonalTrainerAlreadySignedUp
+  PersonalTrainerAlreadySignedUp,
 }
 
 @Injectable()
@@ -23,8 +23,12 @@ export class PersonalTrainerService {
     return this.prisma.personal_trainer.findMany();
   }
 
-  async createPersonalTrainer(data: Prisma.personal_trainerCreateInput): Promise<personal_trainer> {
-    const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({ where: {dni: data.dni} });
+  async createPersonalTrainer(
+    data: Prisma.personal_trainerCreateInput,
+  ): Promise<personal_trainer> {
+    const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({
+      where: { dni: data.dni },
+    });
     if (foundPersonalTrainer != null) {
       throw PersonalTrainerCreationError.PersonalTrainerAlreadySignedUp;
     }
@@ -38,20 +42,16 @@ export class PersonalTrainerService {
     const { data, dni } = params;
     return this.prisma.personal_trainer.update({
       data: data,
-      where: {dni: dni},
+      where: { dni: dni },
     });
   }
 
-  async deletePersonalTrainer(
-    dni: string,
-  ): Promise<personal_trainer> {
-    return this.prisma.personal_trainer.delete({ where : {dni: dni} });
+  async deletePersonalTrainer(dni: string): Promise<personal_trainer> {
+    return this.prisma.personal_trainer.delete({ where: { dni: dni } });
   }
 
-  async getPersonalTrainer(
-    dni: string,
-  ): Promise<personal_trainer> {
+  async getPersonalTrainer(dni: string): Promise<personal_trainer> {
     //console.log(where)
-    return this.prisma.personal_trainer.findUnique({ where:{dni: dni}});
+    return this.prisma.personal_trainer.findUnique({ where: { dni: dni } });
   }
 }

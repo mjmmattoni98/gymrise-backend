@@ -15,6 +15,7 @@ import { TrainingSessionClientController } from './training-session-client/train
 import { TrainingSessionModule } from './training-session/training-session.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConfigModule } from '@nestjs/config';
     TrainingSkillModule,
     AuthModule,
     ConfigModule.forRoot(),
+    UsersModule,
   ],
   controllers: [
     AppController,

@@ -11,8 +11,12 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { ClientCreationError, ClientService, ClientUpdateError } from './client.service';
-import { client as ClientModel } from "@prisma/client";
+import {
+  ClientCreationError,
+  ClientService,
+  ClientUpdateError,
+} from './client.service';
+import { client as ClientModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ChatModule } from 'src/chat/chat.module';
 import { ClientDto } from './dto/client.dto';
@@ -23,27 +27,30 @@ export class ClientController {
 
   @Post('add')
   //@UseGuards(JwtAuthGuard)
-  async signupUser( @Body() userData: ClientDto ): Promise<ClientModel> 
-  {
+  async signupUser(@Body() userData: ClientDto): Promise<ClientModel> {
     try {
       return await this.clientService.createClient(userData);
     } catch (error) {
       switch (error) {
         case ClientCreationError.ClientAlreadySignedUp:
-          throw new HttpException("Client has already signed up", HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            'Client has already signed up',
+            HttpStatus.BAD_REQUEST,
+          );
         default:
           throw error;
       }
     }
   }
 
-  @Put("update/:dni")
+  @Put('update/:dni')
   //@UseGuards(JwtAuthGuard)
-  async updateUser( @Param ('dni') dni: string,
-                    @Body() clientData: ClientDto ): Promise<ClientModel>
-  {
+  async updateUser(
+    @Param('dni') dni: string,
+    @Body() clientData: ClientDto,
+  ): Promise<ClientModel> {
     try {
-      return await this.clientService.updateClient({dni, data: clientData});
+      return await this.clientService.updateClient({ dni, data: clientData });
     } catch (error) {
       switch (error) {
         case ClientUpdateError.ClientDoesntExist:
@@ -55,32 +62,29 @@ export class ClientController {
   }
 
   @Delete('delete/:dni')
-  async cancelAccount( @Param ('dni') dni: string ): Promise<ClientModel> {
-
+  async cancelAccount(@Param('dni') dni: string): Promise<ClientModel> {
     try {
       return await this.clientService.deleteClient(dni);
     } catch (error) {
-      throw new Error("Error while deleting an acocunt");
+      throw new Error('Error while deleting an acocunt');
     }
-
   }
 
   @Get(':dni')
-  async getClient(@Param ('dni') dni: string): Promise<ClientModel> {
-    try{
-      return await this.clientService.getClient(dni)
-    } catch (error){
-      throw new Error("Error while getting the client account")
+  async getClient(@Param('dni') dni: string): Promise<ClientModel> {
+    try {
+      return await this.clientService.getClient(dni);
+    } catch (error) {
+      throw new Error('Error while getting the client account');
     }
   }
 
   @Get()
   async getAllClients(): Promise<ClientModel[]> {
-    try{
+    try {
       return await this.clientService.clients();
-    } catch (error){
-      throw new Error("Error while getting all clients")
+    } catch (error) {
+      throw new Error('Error while getting all clients');
     }
   }
-
 }

@@ -6,9 +6,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { ClientModule } from 'src/client/client.module';
 import { LocalStrategy } from './local.strategy';
-import { PrismaService } from "../prisma.service";
-import { ClientService } from "../client/client.service";
-import { PersonalTrainerService } from "../personal-trainer/personal-trainer.service";
+import { PrismaService } from '../prisma.service';
+import { ClientService } from '../client/client.service';
+import { PersonalTrainerService } from '../personal-trainer/personal-trainer.service';
 
 @Module({
   imports: [
@@ -20,7 +20,14 @@ import { PersonalTrainerService } from "../personal-trainer/personal-trainer.ser
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, LocalStrategy, PrismaService, ClientService, PersonalTrainerService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    LocalStrategy,
+    PrismaService,
+    ClientService,
+    PersonalTrainerService,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

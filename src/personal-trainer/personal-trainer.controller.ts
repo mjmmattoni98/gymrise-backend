@@ -5,26 +5,42 @@ import {
   Post,
   Body,
   Put,
-  Delete, UseGuards, HttpException, HttpStatus, Patch
-} from "@nestjs/common";
+  Delete,
+  UseGuards,
+  HttpException,
+  HttpStatus,
+  Patch,
+} from '@nestjs/common';
 import { PersonalTrainerService } from './personal-trainer.service';
-import { PersonalTrainerCreationError } from "./personal-trainer.service";
+import { PersonalTrainerCreationError } from './personal-trainer.service';
 import { PersonalTrainerDto } from './dto/personalTrainer.dto';
-import { client as ClientModel, personal_trainer as PersonalTrainerModel, Prisma } from "@prisma/client";
+import {
+  client as ClientModel,
+  personal_trainer as PersonalTrainerModel,
+  Prisma,
+} from '@prisma/client';
 
 @Controller('personal-trainer')
 export class PersonalTrainerController {
-  constructor(private readonly personalTrainerService: PersonalTrainerService) {}
+  constructor(
+    private readonly personalTrainerService: PersonalTrainerService,
+  ) {}
 
   @Post('add')
-  async signupTrainer( @Body() trainerData: PersonalTrainerDto): Promise<PersonalTrainerModel>
-  {
+  async signupTrainer(
+    @Body() trainerData: PersonalTrainerDto,
+  ): Promise<PersonalTrainerModel> {
     try {
-      return await this.personalTrainerService.createPersonalTrainer(trainerData);
+      return await this.personalTrainerService.createPersonalTrainer(
+        trainerData,
+      );
     } catch (error) {
       switch (error) {
         case PersonalTrainerCreationError.PersonalTrainerAlreadySignedUp:
-          throw new HttpException("Personal trainer has already signed up", HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            'Personal trainer has already signed up',
+            HttpStatus.BAD_REQUEST,
+          );
         default:
           throw error;
       }
@@ -32,41 +48,48 @@ export class PersonalTrainerController {
   }
 
   @Delete('delete/:dni')
-  async deleteTrainerAccount( @Param ('dni') dni: string ): Promise<PersonalTrainerModel> {
-
+  async deleteTrainerAccount(
+    @Param('dni') dni: string,
+  ): Promise<PersonalTrainerModel> {
     try {
       return await this.personalTrainerService.deletePersonalTrainer(dni);
     } catch (error) {
-      throw new Error("Error while deleting the personal trainer account");
+      throw new Error('Error while deleting the personal trainer account');
     }
-
   }
 
   @Put('update/:dni')
-  async updateTrainerAccount(@Param ('dni') dni: string,
-                             @Body() trainerData: PersonalTrainerDto ): Promise<PersonalTrainerModel> {
-    try{
-      return await this.personalTrainerService.updatePersonalTrainer({dni, data:trainerData})
+  async updateTrainerAccount(
+    @Param('dni') dni: string,
+    @Body() trainerData: PersonalTrainerDto,
+  ): Promise<PersonalTrainerModel> {
+    try {
+      return await this.personalTrainerService.updatePersonalTrainer({
+        dni,
+        data: trainerData,
+      });
     } catch (error) {
-      throw new Error("Error while updating the personal trainer account")
+      throw new Error('Error while updating the personal trainer account');
     }
   }
 
   @Get(':dni')
-  async getTrainerAccount(@Param ('dni') dni: string): Promise<PersonalTrainerModel> {
-    try{
-      return await this.personalTrainerService.getPersonalTrainer(dni)
+  async getTrainerAccount(
+    @Param('dni') dni: string,
+  ): Promise<PersonalTrainerModel> {
+    try {
+      return await this.personalTrainerService.getPersonalTrainer(dni);
     } catch (error) {
-      throw new Error("Error while getting the personal trainer account")
+      throw new Error('Error while getting the personal trainer account');
     }
   }
 
   @Get()
   async getAllTrainers(): Promise<PersonalTrainerModel[]> {
-    try{
+    try {
       return await this.personalTrainerService.personalTrainers();
     } catch (error) {
-      throw new Error("Error while getting all the trainers")
+      throw new Error('Error while getting all the trainers');
     }
   }
 }

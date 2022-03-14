@@ -1,5 +1,6 @@
 import { Auth } from './entity/auth.entity';
 import { PrismaService } from '../prisma.service';
+import bcrypt from 'bcrypt';
 import {
   Injectable,
   NotFoundException,
@@ -11,31 +12,31 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
+  saltRound = 10;
+
   constructor(
     private prisma: PrismaService,
     private clientService: ClientService,
     private jwtService: JwtService,
   ) {}
 
-  async login(dni: string, password: string): Promise<Auth> {
+  async login(email: string, password: string): Promise<Auth> {
     const user = await this.prisma.client.findUnique({
-      where: { dni: dni },
+      where: { email: email },
     });
 
     if (!user) {
-      throw new NotFoundException(`No user found for email: ${dni}`);
+      throw new NotFoundException(`No user found for email: ${email}`);
     }
 
-    // TODO use a library like bcrypt to hash and compare your passwords (Ya está agregada bcrypt al package.json)
-    // https://github.com/kelektiv/node.bcrypt.js#readme
-    const passwordValid = user.password === password;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!passwordValid) {
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
     }
 
     return {
-      accessToken: this.jwtService.sign({ userId: user.dni }),
+      accessToken: this.jwtService.sign({ userId: user.email }),
     };
   }
 
@@ -46,8 +47,8 @@ export class AuthService {
     };
   }
 
-  validateUserJwt(dni: string) {
-    return this.prisma.client.findUnique({ where: { dni: dni } });
+  validateUserJwt(email: string) {
+    return this.prisma.client.findUnique({ where: { email: email } });
   }
 
   async validateUser(

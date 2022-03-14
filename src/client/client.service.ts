@@ -1,20 +1,22 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { client, personal_trainer, Prisma } from "@prisma/client";
+import { client, personal_trainer, Prisma } from '@prisma/client';
 
 export enum ClientCreationError {
-  ClientAlreadySignedUp
+  ClientAlreadySignedUp,
 }
 
 export enum ClientUpdateError {
-  ClientDoesntExist
+  ClientDoesntExist,
 }
 
 @Injectable()
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
-  async client(clientWhereUniqueInput: Prisma.clientWhereUniqueInput): Promise<client | null> {
+  async client(
+    clientWhereUniqueInput: Prisma.clientWhereUniqueInput,
+  ): Promise<client | null> {
     return this.prisma.client.findUnique({ where: clientWhereUniqueInput });
   }
 
@@ -23,7 +25,9 @@ export class ClientService {
   }
 
   async createClient(data: Prisma.clientCreateInput): Promise<client> {
-    const foundClient = await this.prisma.client.findUnique({ where: {dni: data.dni} });
+    const foundClient = await this.prisma.client.findUnique({
+      where: { dni: data.dni },
+    });
     if (foundClient != null) {
       throw ClientCreationError.ClientAlreadySignedUp;
     }
@@ -37,23 +41,19 @@ export class ClientService {
     const { data, dni } = params;
     return this.prisma.client.update({
       data: data,
-      where: {dni: dni},
+      where: { dni: dni },
     });
   }
 
-  async deleteClient(
-    dni: string,
-  ): Promise<client> {
-    return this.prisma.client.delete({ where : {dni: dni} });
+  async deleteClient(dni: string): Promise<client> {
+    return this.prisma.client.delete({ where: { dni: dni } });
   }
 
-  async getClient(
-    dni: string,
-  ): Promise<client> {
+  async getClient(dni: string): Promise<client> {
     //console.log(where)
-    return this.prisma.client.findUnique({ where:{dni: dni}});
+    return this.prisma.client.findUnique({ where: { dni: dni } });
   }
-/*  async updateClient(params: { where: Prisma.clientWhereUniqueInput, data: Prisma.clientUpdateInput }): Promise<client> {
+  /*  async updateClient(params: { where: Prisma.clientWhereUniqueInput, data: Prisma.clientUpdateInput }): Promise<client> {
     const { where, data } = params;
     const foundClient = await this.prisma.client.findUnique({ where: {dni: where.dni} });
     if (foundClient == null) {
