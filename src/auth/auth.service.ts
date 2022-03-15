@@ -22,7 +22,7 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<Auth> {
     const user = await this.prisma.client.findUnique({
-      where: { email: email },
+      where: { dni: email },
     });
 
     if (!user) {
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   validateUserJwt(email: string) {
-    return this.prisma.client.findUnique({ where: { email: email } });
+    return this.prisma.client.findUnique({ where: { dni: email } });
   }
 
   async validateUser(
