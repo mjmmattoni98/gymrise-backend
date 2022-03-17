@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { client, personal_trainer, Prisma } from '@prisma/client';
+import { client, Prisma } from '@prisma/client';
 
 export enum ClientCreationError {
   ClientAlreadySignedUp,

@@ -12,25 +12,23 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  saltRound = 10;
-
   constructor(
     private prisma: PrismaService,
     private clientService: ClientService,
     private jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string): Promise<Auth> {
+  async loginJwt(email: string, password: string): Promise<Auth> {
     const user = await this.prisma.client.findUnique({
-      where: { dni: email },
+      where: { email: email },
     });
 
     if (!user) {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
+    //const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = password === user.password;
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
     }
@@ -48,7 +46,7 @@ export class AuthService {
   }
 
   validateUserJwt(email: string) {
-    return this.prisma.client.findUnique({ where: { dni: email } });
+    return this.prisma.client.findUnique({ where: { email: email } });
   }
 
   async validateUser(

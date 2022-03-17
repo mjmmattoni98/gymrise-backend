@@ -44,7 +44,7 @@ export class ClientController {
   }
 
   @Put('update/:dni')
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async updateUser(
     @Param('dni') dni: string,
     @Body() clientData: ClientDto,

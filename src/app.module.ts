@@ -27,7 +27,9 @@ import { UsersModule } from './users/users.module';
     TrainingSessionClientModule,
     TrainingSkillModule,
     AuthModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     UsersModule,
   ],
   controllers: [

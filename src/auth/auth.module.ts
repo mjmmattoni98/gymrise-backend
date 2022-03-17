@@ -9,13 +9,15 @@ import { LocalStrategy } from './local.strategy';
 import { PrismaService } from '../prisma.service';
 import { ClientService } from '../client/client.service';
 import { PersonalTrainerService } from '../personal-trainer/personal-trainer.service';
+import { ConfigService } from '@nestjs/config';
 
+const configService = new ConfigService();
 @Module({
   imports: [
     ClientModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.jwtSecret,
+      secret: configService.get<string>('JWT_SECRET'),
       signOptions: { expiresIn: '60s' },
     }),
   ],
