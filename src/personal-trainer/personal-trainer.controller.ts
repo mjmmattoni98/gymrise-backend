@@ -9,16 +9,12 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
-  Patch,
 } from '@nestjs/common';
 import { PersonalTrainerService } from './personal-trainer.service';
 import { PersonalTrainerCreationError } from './personal-trainer.service';
 import { PersonalTrainerDto } from './dto/personalTrainer.dto';
-import {
-  client as ClientModel,
-  personal_trainer as PersonalTrainerModel,
-  Prisma,
-} from '@prisma/client';
+import { personal_trainer as PersonalTrainerModel } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('personal-trainer')
 export class PersonalTrainerController {
@@ -59,6 +55,7 @@ export class PersonalTrainerController {
   }
 
   @Put('update/:dni')
+  @UseGuards(JwtAuthGuard)
   async updateTrainerAccount(
     @Param('dni') dni: string,
     @Body() trainerData: PersonalTrainerDto,
@@ -87,7 +84,7 @@ export class PersonalTrainerController {
   @Get()
   async getAllTrainers(): Promise<PersonalTrainerModel[]> {
     try {
-      return await this.personalTrainerService.personalTrainers();
+      return await this.personalTrainerService.getPersonalTrainers();
     } catch (error) {
       throw new Error('Error while getting all the trainers');
     }

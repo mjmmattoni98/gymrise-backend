@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { client, Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 export enum ClientCreationError {
   ClientAlreadySignedUp,
@@ -14,13 +15,11 @@ export enum ClientUpdateError {
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
-  async client(
-    clientWhereUniqueInput: Prisma.clientWhereUniqueInput,
-  ): Promise<client | null> {
-    return this.prisma.client.findUnique({ where: clientWhereUniqueInput });
+  async getClient(dni: string): Promise<client> {
+    return this.prisma.client.findUnique({ where: { dni: dni } });
   }
 
-  async clients(): Promise<client[]> {
+  async getClients(): Promise<client[]> {
     return this.prisma.client.findMany();
   }
 
@@ -31,6 +30,12 @@ export class ClientService {
     if (foundClient != null) {
       throw ClientCreationError.ClientAlreadySignedUp;
     }
+
+    // * Encrypt password
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(data.password, salt);
+    data.password = hashedPassword;
+
     return this.prisma.client.create({ data });
   }
 
@@ -39,6 +44,7 @@ export class ClientService {
     data: Prisma.clientUpdateInput;
   }): Promise<client> {
     const { data, dni } = params;
+
     return this.prisma.client.update({
       data: data,
       where: { dni: dni },
@@ -48,21 +54,4 @@ export class ClientService {
   async deleteClient(dni: string): Promise<client> {
     return this.prisma.client.delete({ where: { dni: dni } });
   }
-
-  async getClient(dni: string): Promise<client> {
-    //console.log(where)
-    return this.prisma.client.findUnique({ where: { dni: dni } });
-  }
-  /*  async updateClient(params: { where: Prisma.clientWhereUniqueInput, data: Prisma.clientUpdateInput }): Promise<client> {
-    const { where, data } = params;
-    const foundClient = await this.prisma.client.findUnique({ where: {dni: where.dni} });
-    if (foundClient == null) {
-      throw ClientUpdateError.ClientDoesntExist;
-    }
-    return this.prisma.client.update({ data, where });
-  }
-
-  async deleteUser(where: Prisma.clientWhereUniqueInput): Promise<client> {
-    return this.prisma.client.delete({ where });
-  }*/
 }

@@ -7,7 +7,6 @@ import {
   Put,
   Delete,
   UseGuards,
-  ConsoleLogger,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -18,7 +17,6 @@ import {
 } from './client.service';
 import { client as ClientModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ChatModule } from 'src/chat/chat.module';
 import { ClientDto } from './dto/client.dto';
 
 @Controller('client')
@@ -66,7 +64,7 @@ export class ClientController {
     try {
       return await this.clientService.deleteClient(dni);
     } catch (error) {
-      throw new Error('Error while deleting an acocunt');
+      throw new Error('Error while deleting an account');
     }
   }
 
@@ -82,7 +80,7 @@ export class ClientController {
   @Get()
   async getAllClients(): Promise<ClientModel[]> {
     try {
-      return await this.clientService.clients();
+      return await this.clientService.getClients();
     } catch (error) {
       throw new Error('Error while getting all clients');
     }

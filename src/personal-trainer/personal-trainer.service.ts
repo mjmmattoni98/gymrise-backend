@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { personal_trainer, Prisma } from '@prisma/client';
-import { ClientCreationError } from '../client/client.service';
+import * as bcrypt from 'bcrypt';
 
 export enum PersonalTrainerCreationError {
   PersonalTrainerAlreadySignedUp,
@@ -11,15 +11,11 @@ export enum PersonalTrainerCreationError {
 export class PersonalTrainerService {
   constructor(private prisma: PrismaService) {}
 
-  async personalTrainer(
-    postWhereUniqueInput: Prisma.personal_trainerWhereUniqueInput,
-  ): Promise<personal_trainer | null> {
-    return this.prisma.personal_trainer.findUnique({
-      where: postWhereUniqueInput,
-    });
+  async getPersonalTrainer(dni: string): Promise<personal_trainer> {
+    return this.prisma.personal_trainer.findUnique({ where: { dni: dni } });
   }
 
-  async personalTrainers(): Promise<personal_trainer[]> {
+  async getPersonalTrainers(): Promise<personal_trainer[]> {
     return this.prisma.personal_trainer.findMany();
   }
 
@@ -32,6 +28,12 @@ export class PersonalTrainerService {
     if (foundPersonalTrainer != null) {
       throw PersonalTrainerCreationError.PersonalTrainerAlreadySignedUp;
     }
+
+    // * Encrypt password
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(data.password, salt);
+    data.password = hashedPassword;
+
     return this.prisma.personal_trainer.create({ data });
   }
 
@@ -48,10 +50,5 @@ export class PersonalTrainerService {
 
   async deletePersonalTrainer(dni: string): Promise<personal_trainer> {
     return this.prisma.personal_trainer.delete({ where: { dni: dni } });
-  }
-
-  async getPersonalTrainer(dni: string): Promise<personal_trainer> {
-    //console.log(where)
-    return this.prisma.personal_trainer.findUnique({ where: { dni: dni } });
   }
 }
