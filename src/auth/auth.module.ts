@@ -17,7 +17,7 @@ const configService = new ConfigService();
     ClientModule,
     PassportModule,
     JwtModule.register({
-      secret: 'LaMejorAplicacionDelMundoGymrise-2021',
+      secret: configService.get<string>('JWT_SECRET'),
       signOptions: { expiresIn: '60s' },
     }),
   ],
