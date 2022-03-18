@@ -19,6 +19,10 @@ export class ClientService {
     return this.prisma.client.findUnique({ where: { dni: dni } });
   }
 
+  async getClientEmail(email: string): Promise<client> {
+    return this.prisma.client.findUnique({ where: { email: email } });
+  }
+
   async getClients(): Promise<client[]> {
     return this.prisma.client.findMany();
   }

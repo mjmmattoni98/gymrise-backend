@@ -27,8 +27,8 @@ export class AuthService {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
 
-    //const isPasswordValid = await bcrypt.compare(password, user.password);
-    const isPasswordValid = password === user.password;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // const isPasswordValid = password === user.password;
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
     }
@@ -49,12 +49,9 @@ export class AuthService {
     return this.prisma.client.findUnique({ where: { email: email } });
   }
 
-  async validateUser(
-    username: Prisma.clientWhereUniqueInput,
-    pass: string,
-  ): Promise<any> {
-    const user = await this.clientService.client(username);
-    if (user && user.password === pass) {
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.clientService.getClientEmail(email);
+    if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
     }

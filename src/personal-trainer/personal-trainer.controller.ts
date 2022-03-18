@@ -15,6 +15,7 @@ import { PersonalTrainerCreationError } from './personal-trainer.service';
 import { PersonalTrainerDto } from './dto/personalTrainer.dto';
 import { personal_trainer as PersonalTrainerModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('personal-trainer')
 export class PersonalTrainerController {
@@ -56,6 +57,7 @@ export class PersonalTrainerController {
 
   @Put('update/:dni')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async updateTrainerAccount(
     @Param('dni') dni: string,
     @Body() trainerData: PersonalTrainerDto,

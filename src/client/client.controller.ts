@@ -18,13 +18,13 @@ import {
 import { client as ClientModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ClientDto } from './dto/client.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Post('add')
-  //@UseGuards(JwtAuthGuard)
   async signupUser(@Body() userData: ClientDto): Promise<ClientModel> {
     try {
       return await this.clientService.createClient(userData);
@@ -43,6 +43,7 @@ export class ClientController {
 
   @Put('update/:dni')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async updateUser(
     @Param('dni') dni: string,
     @Body() clientData: ClientDto,
