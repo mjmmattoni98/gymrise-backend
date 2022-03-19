@@ -1,14 +1,13 @@
-import { Auth } from './entity/auth.entity';
-import { PrismaService } from '../prisma.service';
-import bcrypt from 'bcrypt';
 import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ClientService } from 'src/client/client.service';
-import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { ClientService } from '../client/client.service';
+import { PrismaService } from '../prisma.service';
+import { Auth } from './entity/auth.entity';
 
 @Injectable()
 export class AuthService {

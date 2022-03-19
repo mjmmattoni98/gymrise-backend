@@ -18,6 +18,7 @@ const configService = new ConfigService();
     PassportModule,
     JwtModule.register({
       secret: configService.get<string>('JWT_SECRET'),
+      // secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60s' },
     }),
   ],

@@ -14,21 +14,17 @@ import { CurrentUser } from './current-user';
 
 @Controller()
 export class AppController {
-  constructor(private readonly authService: AuthService) {}
-
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  async login(@Request() req) {
-    // return req.user;
-    return this.authService.loginUser(req.user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
-
+  // constructor(private readonly authService: AuthService) {}
+  // @UseGuards(LocalAuthGuard)
+  // @Post('auth/login')
+  // async login(@Request() req) {
+  //   return this.authService.loginUser(req.user);
+  // }
+  // @UseGuards(JwtAuthGuard)
+  // @Get('profile')
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
   // @Query((returns) => Client)
   // @UseGuards(GqlAuthGuard)
   // whoAmI(@CurrentUser() client: Client) {
