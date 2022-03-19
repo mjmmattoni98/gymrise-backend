@@ -1,20 +1,19 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   HttpException,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+  HttpStatus, Param,
+  Post, Put, UseGuards
+} from "@nestjs/common";
 import { TrainingSessionDto } from './dto/trainingSession.dto';
 import {
   training_session as TrainingSessionModel,
-  Prisma,
-} from '@prisma/client';
-import {
-  PersonalTrainerCreationError,
-  PersonalTrainerService,
-} from '../personal-trainer/personal-trainer.service';
+  Prisma, personal_trainer as PersonalTrainerModel
+} from "@prisma/client";
 import { TrainingSessionService } from './training-session.service';
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { ApiBearerAuth } from "@nestjs/swagger";
+import { PersonalTrainerDto } from "../personal-trainer/dto/personalTrainer.dto";
 
 @Controller('training-session')
 export class TrainingSessionController {
@@ -43,6 +42,33 @@ export class TrainingSessionController {
       );
     } catch (error) {
       throw new Error('Error while creating the personal trainer session');
+    }
+  }
+
+  @Delete('delete/:id')
+  async deleteTrainingSession(
+    @Param('id') id: string,
+  ): Promise<TrainingSessionModel> {
+    try {
+      return await this.trainingSessionService.deleteTrainingSession(Number(id));
+    } catch (error) {
+      throw new Error('Error while deleting the training session');
+    }
+  }
+
+  @Put('update/:id')
+  @ApiBearerAuth()
+  async updateTrainingSession(
+    @Param('id') id: string,
+    @Body() trainingSessionData: TrainingSessionDto,
+  ): Promise<TrainingSessionModel> {
+    try {
+      return await this.trainingSessionService.updateTrainingSession({
+        id: Number(id),
+        data: trainingSessionData,
+      });
+    } catch (error) {
+      throw new Error('Error while updating the training session');
     }
   }
 }
