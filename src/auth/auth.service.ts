@@ -5,29 +5,32 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { ClientService } from '../client/client.service';
+import { UsersService } from 'src/users/users.service';
 import { PrismaService } from '../prisma.service';
+import { LoginDto } from './dto/login.dto';
 import { Auth } from './entity/auth.entity';
+
+export enum UserLoginError {
+  ClientAlreadyLogin,
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private clientService: ClientService,
     private jwtService: JwtService,
+    private usersService: UsersService,
   ) {}
 
-  async loginJwt(email: string, password: string): Promise<Auth> {
-    const user = await this.prisma.client.findUnique({
-      where: { email: email },
-    });
+  async loginJwt({ email, password }: LoginDto): Promise<Auth> {
+    const user = await this.usersService.getUser(email);
 
     if (!user) {
       throw new NotFoundException(`No user found for email: ${email}`);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    // const isPasswordValid = password === user.password;
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password');
     }
@@ -37,20 +40,13 @@ export class AuthService {
     };
   }
 
-  async loginUser(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+  async validateUser({ email, password }: LoginDto): Promise<any> {
+    const user = await this.prisma.client.findUnique({
+      where: { email: email },
+    });
 
-  validateUserJwt(email: string) {
-    return this.prisma.client.findUnique({ where: { email: email } });
-  }
-
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.clientService.getClientEmail(email);
-    if (user && user.password === password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (user && isPasswordValid) {
       const { password, ...result } = user;
       return result;
     }

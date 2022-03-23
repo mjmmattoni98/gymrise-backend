@@ -10,15 +10,16 @@ import { PrismaService } from '../prisma.service';
 import { ClientService } from '../client/client.service';
 import { PersonalTrainerService } from '../personal-trainer/personal-trainer.service';
 import { ConfigService } from '@nestjs/config';
+import { UsersModule } from 'src/users/users.module';
 
 const configService = new ConfigService();
 @Module({
   imports: [
     ClientModule,
+    UsersModule,
     PassportModule,
     JwtModule.register({
       secret: configService.get<string>('JWT_SECRET'),
-      // secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60s' },
     }),
   ],
