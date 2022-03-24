@@ -1,17 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { sex } from '@prisma/client';
-import { IsNotEmpty } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  Length,
+  MaxLength,
+} from 'class-validator';
 
 export class ClientDto {
   @IsNotEmpty()
+  @MaxLength(40)
   @ApiProperty()
   name: string;
 
   @IsNotEmpty()
+  @MaxLength(40)
   @ApiProperty()
   surname: string;
 
   @IsNotEmpty()
+  @Length(9)
   @ApiProperty()
   dni: string;
 
@@ -20,6 +29,7 @@ export class ClientDto {
   password: string;
 
   @IsNotEmpty()
+  @MaxLength(40)
   @ApiProperty()
   email: string;
 
@@ -28,10 +38,14 @@ export class ClientDto {
   description: string;
 
   @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty()
   height: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty()
   weight: number;
 
@@ -40,6 +54,8 @@ export class ClientDto {
   sex: sex;
 
   @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty()
   age: number;
 }

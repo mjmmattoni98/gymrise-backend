@@ -1,16 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Length, MaxLength } from 'class-validator';
 
 export class PersonalTrainerDto {
   @IsNotEmpty()
+  @MaxLength(40)
   @ApiProperty()
   name: string;
 
   @IsNotEmpty()
+  @MaxLength(40)
   @ApiProperty()
   surname: string;
 
   @IsNotEmpty()
+  @Length(9)
   @ApiProperty()
   dni: string;
 
@@ -19,6 +22,7 @@ export class PersonalTrainerDto {
   password: string;
 
   @IsNotEmpty()
+  @MaxLength(40)
   @ApiProperty()
   email: string;
 
