@@ -1,17 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
-import { PersonalTrainerDto as personal_trainer } from '../../personal-trainer/dto/personalTrainer.dto';
-
-export class personal_trainerCreateNestedOneWithoutTraining_sessionInput {
-  create?: personal_trainer;
-}
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  Length,
+} from 'class-validator';
 
 export class TrainingSessionDto {
   @IsNotEmpty()
+  @IsDate()
   @ApiProperty()
   date: Date;
 
   @IsNotEmpty()
+  @IsDate()
   @ApiProperty()
   time: Date;
 
@@ -20,10 +23,13 @@ export class TrainingSessionDto {
   description: string;
 
   @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   @ApiProperty()
   price: number;
 
   @IsNotEmpty()
+  @Length(9)
   @ApiProperty()
   dni: string;
 }

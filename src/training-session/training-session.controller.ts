@@ -1,19 +1,25 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
+  Get,
   HttpException,
-  HttpStatus, Param,
-  Post, Put, UseGuards
-} from "@nestjs/common";
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { TrainingSessionDto } from './dto/trainingSession.dto';
 import {
   training_session as TrainingSessionModel,
-  Prisma, personal_trainer as PersonalTrainerModel
-} from "@prisma/client";
+  Prisma,
+  personal_trainer as PersonalTrainerModel,
+} from '@prisma/client';
 import { TrainingSessionService } from './training-session.service';
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { ApiBearerAuth } from "@nestjs/swagger";
-import { PersonalTrainerDto } from "../personal-trainer/dto/personalTrainer.dto";
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { PersonalTrainerDto } from '../personal-trainer/dto/personalTrainer.dto';
 
 @Controller('training-session')
 export class TrainingSessionController {
@@ -50,7 +56,9 @@ export class TrainingSessionController {
     @Param('id') id: string,
   ): Promise<TrainingSessionModel> {
     try {
-      return await this.trainingSessionService.deleteTrainingSession(Number(id));
+      return await this.trainingSessionService.deleteTrainingSession(
+        Number(id),
+      );
     } catch (error) {
       throw new Error('Error while deleting the training session');
     }
@@ -69,6 +77,26 @@ export class TrainingSessionController {
       });
     } catch (error) {
       throw new Error('Error while updating the training session');
+    }
+  }
+
+  @Get(':id')
+  async getClient(@Param('id') id: string): Promise<TrainingSessionModel> {
+    try {
+      return await this.trainingSessionService.getTrainingSessionById(
+        Number(id),
+      );
+    } catch (error) {
+      throw new Error('Error while getting the training session');
+    }
+  }
+
+  @Get()
+  async getAllClients(): Promise<TrainingSessionModel[]> {
+    try {
+      return await this.trainingSessionService.getTrainingSessions();
+    } catch (error) {
+      throw new Error('Error while getting all training sessions');
     }
   }
 }
