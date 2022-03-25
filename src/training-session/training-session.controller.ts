@@ -81,7 +81,9 @@ export class TrainingSessionController {
   }
 
   @Get(':id')
-  async getClient(@Param('id') id: string): Promise<TrainingSessionModel> {
+  async getTrainingSession(
+    @Param('id') id: string,
+  ): Promise<TrainingSessionModel> {
     try {
       return await this.trainingSessionService.getTrainingSessionById(
         Number(id),
@@ -92,7 +94,7 @@ export class TrainingSessionController {
   }
 
   @Get()
-  async getAllClients(): Promise<TrainingSessionModel[]> {
+  async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
     try {
       return await this.trainingSessionService.getTrainingSessions();
     } catch (error) {
