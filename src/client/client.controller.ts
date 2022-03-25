@@ -24,8 +24,28 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
+  @Get(':dni')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getClient(@Param('dni') dni: string): Promise<ClientModel> {
+    try {
+      return await this.clientService.getClientByDni(dni);
+    } catch (error) {
+      throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Get()
+  async getClients(): Promise<ClientModel[]> {
+    try {
+      return await this.clientService.getClients();
+    } catch (error) {
+      throw new Error('Error while getting all clients');
+    }
+  }
+
   @Post('add')
-  async signupUser(@Body() userData: ClientDto): Promise<ClientModel> {
+  async signupClient(@Body() userData: ClientDto): Promise<ClientModel> {
     try {
       return await this.clientService.createClient(userData);
     } catch (error) {
@@ -44,7 +64,7 @@ export class ClientController {
   @Put('update/:dni')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async updateUser(
+  async updateClient(
     @Param('dni') dni: string,
     @Body() clientData: ClientDto,
   ): Promise<ClientModel> {
@@ -53,7 +73,10 @@ export class ClientController {
     } catch (error) {
       switch (error) {
         case ClientUpdateError.ClientDoesntExist:
-          throw new HttpException("Client doesn't exists", HttpStatus.GONE);
+          throw new HttpException(
+            "Client doesn't found to update",
+            HttpStatus.NOT_FOUND,
+          );
         default:
           throw error;
       }
@@ -61,29 +84,16 @@ export class ClientController {
   }
 
   @Delete('delete/:dni')
-  async cancelAccount(@Param('dni') dni: string): Promise<ClientModel> {
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async deleteClientAccount(@Param('dni') dni: string): Promise<ClientModel> {
     try {
       return await this.clientService.deleteClient(dni);
     } catch (error) {
-      throw new Error('Error while deleting an account');
-    }
-  }
-
-  @Get(':dni')
-  async getClient(@Param('dni') dni: string): Promise<ClientModel> {
-    try {
-      return await this.clientService.getClient(dni);
-    } catch (error) {
-      throw new Error('Error while getting the client account');
-    }
-  }
-
-  @Get()
-  async getAllClients(): Promise<ClientModel[]> {
-    try {
-      return await this.clientService.getClients();
-    } catch (error) {
-      throw new Error('Error while getting all clients');
+      throw new HttpException(
+        "Client doesn't found to delete",
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 }

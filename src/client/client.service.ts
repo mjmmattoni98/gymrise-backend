@@ -15,11 +15,11 @@ export enum ClientUpdateError {
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
-  async getClient(dni: string): Promise<client> {
+  async getClientByDni(dni: string): Promise<client> {
     return this.prisma.client.findUnique({ where: { dni: dni } });
   }
 
-  async getClientEmail(email: string): Promise<client> {
+  async getClientByEmail(email: string): Promise<client> {
     return this.prisma.client.findUnique({ where: { email: email } });
   }
 
@@ -31,7 +31,7 @@ export class ClientService {
     const foundClient = await this.prisma.client.findUnique({
       where: { dni: data.dni },
     });
-    if (foundClient != null) {
+    if (foundClient) {
       throw ClientCreationError.ClientAlreadySignedUp;
     }
 
@@ -48,6 +48,13 @@ export class ClientService {
     data: Prisma.clientUpdateInput;
   }): Promise<client> {
     const { data, dni } = params;
+
+    const foundClient = await this.prisma.client.findUnique({
+      where: { dni: dni },
+    });
+    if (foundClient) {
+      throw ClientUpdateError.ClientDoesntExist;
+    }
 
     return this.prisma.client.update({
       data: data,

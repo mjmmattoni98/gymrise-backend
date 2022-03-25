@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { sex } from '@prisma/client';
 import {
+  IsEmail,
   IsNotEmpty,
   IsNumber,
   IsPositive,
@@ -29,6 +30,7 @@ export class ClientDto {
   password: string;
 
   @IsNotEmpty()
+  @IsEmail()
   @MaxLength(40)
   @ApiProperty()
   email: string;

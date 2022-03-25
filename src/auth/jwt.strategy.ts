@@ -4,7 +4,10 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginDto } from './dto/login.dto';
-import { client, personal_trainer } from '@prisma/client';
+import {
+  client as ClientModel,
+  personal_trainer as PersonalTrainerModel,
+} from '@prisma/client';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,7 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(loginInfo: LoginDto): Promise<client | personal_trainer> {
+  async validate(
+    loginInfo: LoginDto,
+  ): Promise<ClientModel | PersonalTrainerModel> {
     const user = await this.auth.validateUser(loginInfo);
 
     if (!user) {

@@ -10,7 +10,10 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { PersonalTrainerService } from './personal-trainer.service';
+import {
+  PersonalTrainerService,
+  PersonalTrainerUpdateError,
+} from './personal-trainer.service';
 import { PersonalTrainerCreationError } from './personal-trainer.service';
 import { PersonalTrainerDto } from './dto/personalTrainer.dto';
 import { personal_trainer as PersonalTrainerModel } from '@prisma/client';
@@ -22,6 +25,29 @@ export class PersonalTrainerController {
   constructor(
     private readonly personalTrainerService: PersonalTrainerService,
   ) {}
+
+  @Get(':dni')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getTrainer(@Param('dni') dni: string): Promise<PersonalTrainerModel> {
+    try {
+      return await this.personalTrainerService.getPersonalTrainer(dni);
+    } catch (error) {
+      throw new HttpException(
+        'Personal trainer not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  @Get()
+  async getTrainers(): Promise<PersonalTrainerModel[]> {
+    try {
+      return await this.personalTrainerService.getPersonalTrainers();
+    } catch (error) {
+      throw new Error('Error while getting all the trainers');
+    }
+  }
 
   @Post('add')
   async signupTrainer(
@@ -44,21 +70,10 @@ export class PersonalTrainerController {
     }
   }
 
-  @Delete('delete/:dni')
-  async deleteTrainerAccount(
-    @Param('dni') dni: string,
-  ): Promise<PersonalTrainerModel> {
-    try {
-      return await this.personalTrainerService.deletePersonalTrainer(dni);
-    } catch (error) {
-      throw new Error('Error while deleting the personal trainer account');
-    }
-  }
-
   @Put('update/:dni')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async updateTrainerAccount(
+  async updateTrainer(
     @Param('dni') dni: string,
     @Body() trainerData: PersonalTrainerDto,
   ): Promise<PersonalTrainerModel> {
@@ -68,27 +83,28 @@ export class PersonalTrainerController {
         data: trainerData,
       });
     } catch (error) {
-      throw new Error('Error while updating the personal trainer account');
+      switch (error) {
+        case PersonalTrainerUpdateError.PersonalTrainerDoesntExist:
+          throw new HttpException(
+            "Personal trainer doesn't found to update",
+            HttpStatus.NOT_FOUND,
+          );
+        default:
+          throw error;
+      }
     }
   }
 
-  @Get(':dni')
-  async getTrainerAccount(
+  @Delete('delete/:dni')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async deleteTrainerAccount(
     @Param('dni') dni: string,
   ): Promise<PersonalTrainerModel> {
     try {
-      return await this.personalTrainerService.getPersonalTrainer(dni);
+      return await this.personalTrainerService.deletePersonalTrainer(dni);
     } catch (error) {
-      throw new Error('Error while getting the personal trainer account');
-    }
-  }
-
-  @Get()
-  async getAllTrainers(): Promise<PersonalTrainerModel[]> {
-    try {
-      return await this.personalTrainerService.getPersonalTrainers();
-    } catch (error) {
-      throw new Error('Error while getting all the trainers');
+      throw new Error('Error while deleting the personal trainer account');
     }
   }
 }

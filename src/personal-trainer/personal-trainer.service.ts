@@ -1,31 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { personal_trainer, Prisma } from '@prisma/client';
+import {
+  personal_trainer as PersonalTrainerModel,
+  Prisma,
+} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 export enum PersonalTrainerCreationError {
   PersonalTrainerAlreadySignedUp,
 }
 
+export enum PersonalTrainerUpdateError {
+  PersonalTrainerDoesntExist,
+}
+
 @Injectable()
 export class PersonalTrainerService {
   constructor(private prisma: PrismaService) {}
 
-  async getPersonalTrainer(dni: string): Promise<personal_trainer> {
+  async getPersonalTrainer(dni: string): Promise<PersonalTrainerModel> {
     return this.prisma.personal_trainer.findUnique({ where: { dni: dni } });
   }
 
-  async getPersonalTrainers(): Promise<personal_trainer[]> {
+  async getPersonalTrainers(): Promise<PersonalTrainerModel[]> {
     return this.prisma.personal_trainer.findMany();
   }
 
   async createPersonalTrainer(
     data: Prisma.personal_trainerCreateInput,
-  ): Promise<personal_trainer> {
+  ): Promise<PersonalTrainerModel> {
     const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({
       where: { dni: data.dni },
     });
-    if (foundPersonalTrainer != null) {
+    if (foundPersonalTrainer) {
       throw PersonalTrainerCreationError.PersonalTrainerAlreadySignedUp;
     }
 
@@ -40,15 +47,22 @@ export class PersonalTrainerService {
   async updatePersonalTrainer(params: {
     dni: string;
     data: Prisma.personal_trainerUpdateInput;
-  }): Promise<personal_trainer> {
+  }): Promise<PersonalTrainerModel> {
     const { data, dni } = params;
+    const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({
+      where: { dni: dni },
+    });
+    if (foundPersonalTrainer) {
+      throw PersonalTrainerUpdateError.PersonalTrainerDoesntExist;
+    }
+
     return this.prisma.personal_trainer.update({
       data: data,
       where: { dni: dni },
     });
   }
 
-  async deletePersonalTrainer(dni: string): Promise<personal_trainer> {
+  async deletePersonalTrainer(dni: string): Promise<PersonalTrainerModel> {
     return this.prisma.personal_trainer.delete({ where: { dni: dni } });
   }
 }

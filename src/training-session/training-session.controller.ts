@@ -14,12 +14,10 @@ import { TrainingSessionDto } from './dto/trainingSession.dto';
 import {
   training_session as TrainingSessionModel,
   Prisma,
-  personal_trainer as PersonalTrainerModel,
 } from '@prisma/client';
 import { TrainingSessionService } from './training-session.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { PersonalTrainerDto } from '../personal-trainer/dto/personalTrainer.dto';
 
 @Controller('training-session')
 export class TrainingSessionController {
@@ -27,8 +25,37 @@ export class TrainingSessionController {
     private readonly trainingSessionService: TrainingSessionService,
   ) {}
 
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getTrainingSession(
+    @Param('id') id: string,
+  ): Promise<TrainingSessionModel> {
+    try {
+      return await this.trainingSessionService.getTrainingSessionById(
+        Number(id),
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Training session not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  @Get()
+  async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
+    try {
+      return await this.trainingSessionService.getTrainingSessions();
+    } catch (error) {
+      throw new Error('Error while getting all training sessions');
+    }
+  }
+
   @Post('add')
-  async addSessionTrainer(
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async addTrainingSession(
     @Body() sessionData: TrainingSessionDto,
   ): Promise<TrainingSessionModel> {
     try {
@@ -47,24 +74,12 @@ export class TrainingSessionController {
         prismaSessionObject,
       );
     } catch (error) {
-      throw new Error('Error while creating the personal trainer session');
-    }
-  }
-
-  @Delete('delete/:id')
-  async deleteTrainingSession(
-    @Param('id') id: string,
-  ): Promise<TrainingSessionModel> {
-    try {
-      return await this.trainingSessionService.deleteTrainingSession(
-        Number(id),
-      );
-    } catch (error) {
-      throw new Error('Error while deleting the training session');
+      throw new Error('Error while creating the training session');
     }
   }
 
   @Put('update/:id')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async updateTrainingSession(
     @Param('id') id: string,
@@ -80,25 +95,18 @@ export class TrainingSessionController {
     }
   }
 
-  @Get(':id')
-  async getTrainingSession(
+  @Delete('delete/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async deleteTrainingSession(
     @Param('id') id: string,
   ): Promise<TrainingSessionModel> {
     try {
-      return await this.trainingSessionService.getTrainingSessionById(
+      return await this.trainingSessionService.deleteTrainingSession(
         Number(id),
       );
     } catch (error) {
-      throw new Error('Error while getting the training session');
-    }
-  }
-
-  @Get()
-  async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
-    try {
-      return await this.trainingSessionService.getTrainingSessions();
-    } catch (error) {
-      throw new Error('Error while getting all training sessions');
+      throw new Error('Error while deleting the training session');
     }
   }
 }
