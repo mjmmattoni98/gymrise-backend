@@ -19,12 +19,17 @@ import { client as ClientModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ClientDto } from './dto/client.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'src/users/roles/roles.decorator';
+import { Role } from 'src/users/roles/role.enum';
+import { RolesGuard } from 'src/users/roles/roles.guard';
 
 @Controller('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Get(':dni')
+  @Roles(Role.CLIENT)
+  @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async getClient(@Param('dni') dni: string): Promise<ClientModel> {
