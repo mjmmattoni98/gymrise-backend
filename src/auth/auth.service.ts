@@ -6,9 +6,12 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
-import { PrismaService } from '../prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { Auth } from './entity/auth.entity';
+import {
+  client as ClientModel,
+  personal_trainer as PersonalTrainerModel,
+} from '@prisma/client';
 
 export enum UserLoginError {
   ClientAlreadyLogin,
@@ -17,7 +20,6 @@ export enum UserLoginError {
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
     private jwtService: JwtService,
     private usersService: UsersService,
   ) {}
@@ -40,16 +42,11 @@ export class AuthService {
     };
   }
 
-  async validateUser({ email, password }: LoginDto): Promise<any> {
-    const user = await this.prisma.client.findUnique({
-      where: { email: email },
-    });
+  async validateUser(
+    email: string,
+  ): Promise<ClientModel | PersonalTrainerModel> {
+    const user = await this.usersService.getUser(email);
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (user && isPasswordValid) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
+    return user;
   }
 }

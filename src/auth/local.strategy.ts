@@ -2,7 +2,6 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import {
   client as ClientModel,
   personal_trainer as PersonalTrainerModel,
@@ -14,13 +13,17 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  async validate(
-    loginInfo: LoginDto,
-  ): Promise<ClientModel | PersonalTrainerModel> {
-    const user = await this.authService.validateUser(loginInfo);
+  async validate(payload: {
+    loginInfo: string;
+  }): Promise<ClientModel | PersonalTrainerModel> {
+    const user = await this.authService.validateUser(payload.loginInfo);
+
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        `No user found for email: ${payload.loginInfo}`,
+      );
     }
+
     return user;
   }
 }

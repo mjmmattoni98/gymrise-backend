@@ -3,7 +3,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { LoginDto } from './dto/login.dto';
 import {
   client as ClientModel,
   personal_trainer as PersonalTrainerModel,
@@ -19,13 +18,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(
-    loginInfo: LoginDto,
-  ): Promise<ClientModel | PersonalTrainerModel> {
-    const user = await this.auth.validateUser(loginInfo);
+  async validate(payload: {
+    userId: string;
+  }): Promise<ClientModel | PersonalTrainerModel> {
+    const user = await this.auth.validateUser(payload.userId);
 
     if (!user) {
-      throw new UnauthorizedException();
+      console.log(`No user found for email: ${payload.userId}`);
+      throw new UnauthorizedException(
+        `No user found for email: ${payload.userId}`,
+      );
     }
 
     return user;
