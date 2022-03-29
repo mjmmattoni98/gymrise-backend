@@ -52,7 +52,7 @@ export class ClientService {
     const foundClient = await this.prisma.client.findUnique({
       where: { dni: dni },
     });
-    if (foundClient) {
+    if (!foundClient) {
       throw ClientUpdateError.ClientDoesntExist;
     }
 

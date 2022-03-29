@@ -52,7 +52,7 @@ export class PersonalTrainerService {
     const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({
       where: { dni: dni },
     });
-    if (foundPersonalTrainer) {
+    if (!foundPersonalTrainer) {
       throw PersonalTrainerUpdateError.PersonalTrainerDoesntExist;
     }
 
