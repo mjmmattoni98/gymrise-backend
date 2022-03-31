@@ -56,13 +56,13 @@ export class ClientService {
       throw ClientUpdateError.ClientDoesntExist;
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(data.password as string, salt);
-    data.password = hashedPassword;
+    // const salt = await bcrypt.genSalt();
+    // const hashedPassword = await bcrypt.hash(data.password as string, salt);
+    // data.password = hashedPassword;
 
     return this.prisma.client.update({
-      data: data,
       where: { dni: dni },
+      data: data,
     });
   }
 

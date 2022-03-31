@@ -10,16 +10,18 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { TrainingSessionDto } from './dto/trainingSession.dto';
+import { TrainingSessionDto } from './dto/training-session.dto';
 import {
   training_session as TrainingSessionModel,
   Prisma,
 } from '@prisma/client';
 import { TrainingSessionService } from './training-session.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateTrainingSessionDto } from './dto/update-training-session.dto';
 
 @Controller('training-session')
+@ApiTags('training-session')
 export class TrainingSessionController {
   constructor(
     private readonly trainingSessionService: TrainingSessionService,
@@ -27,6 +29,7 @@ export class TrainingSessionController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
   async getTrainingSession(
     @Param('id') id: string,
@@ -54,6 +57,7 @@ export class TrainingSessionController {
 
   @Post('add')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
   async addTrainingSession(
     @Body() sessionData: TrainingSessionDto,
@@ -80,10 +84,11 @@ export class TrainingSessionController {
 
   @Put('update/:id')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
   async updateTrainingSession(
     @Param('id') id: string,
-    @Body() trainingSessionData: TrainingSessionDto,
+    @Body() trainingSessionData: UpdateTrainingSessionDto,
   ): Promise<TrainingSessionModel> {
     try {
       return await this.trainingSessionService.updateTrainingSession({
@@ -97,6 +102,7 @@ export class TrainingSessionController {
 
   @Delete('delete/:id')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
   async deleteTrainingSession(
     @Param('id') id: string,

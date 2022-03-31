@@ -18,12 +18,14 @@ import {
 import { client as ClientModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ClientDto } from './dto/client.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/users/roles/roles.decorator';
 import { Role } from 'src/users/roles/role.enum';
 import { RolesGuard } from 'src/users/roles/roles.guard';
+import { UpdateClientDto } from './dto/update-client.dto';
 
 @Controller('client')
+@ApiTags('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
@@ -31,6 +33,7 @@ export class ClientController {
   @Roles(Role.CLIENT)
   @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
   async getClient(@Param('dni') dni: string): Promise<ClientModel> {
     try {
@@ -50,6 +53,7 @@ export class ClientController {
   }
 
   @Post('add')
+  @ApiOkResponse({ type: ClientDto })
   async signupClient(@Body() userData: ClientDto): Promise<ClientModel> {
     try {
       return await this.clientService.createClient(userData);
@@ -68,10 +72,11 @@ export class ClientController {
 
   @Put('update/:dni')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
   async updateClient(
     @Param('dni') dni: string,
-    @Body() clientData: ClientDto,
+    @Body() clientData: UpdateClientDto,
   ): Promise<ClientModel> {
     try {
       return await this.clientService.updateClient({ dni, data: clientData });
@@ -90,6 +95,7 @@ export class ClientController {
 
   @Delete('delete/:dni')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
   async deleteClientAccount(@Param('dni') dni: string): Promise<ClientModel> {
     try {

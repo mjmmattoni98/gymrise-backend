@@ -15,12 +15,14 @@ import {
   PersonalTrainerUpdateError,
 } from './personal-trainer.service';
 import { PersonalTrainerCreationError } from './personal-trainer.service';
-import { PersonalTrainerDto } from './dto/personalTrainer.dto';
+import { PersonalTrainerDto } from './dto/personal-trainer.dto';
 import { personal_trainer as PersonalTrainerModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UpdatePersonalTrainerDto } from './dto/update-personal-trainer.dto';
 
 @Controller('personal-trainer')
+@ApiTags('personal-trainer')
 export class PersonalTrainerController {
   constructor(
     private readonly personalTrainerService: PersonalTrainerService,
@@ -28,6 +30,7 @@ export class PersonalTrainerController {
 
   @Get(':dni')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
   async getTrainer(@Param('dni') dni: string): Promise<PersonalTrainerModel> {
     try {
@@ -50,6 +53,7 @@ export class PersonalTrainerController {
   }
 
   @Post('add')
+  @ApiOkResponse({ type: PersonalTrainerDto })
   async signupTrainer(
     @Body() trainerData: PersonalTrainerDto,
   ): Promise<PersonalTrainerModel> {
@@ -72,10 +76,11 @@ export class PersonalTrainerController {
 
   @Put('update/:dni')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
   async updateTrainer(
     @Param('dni') dni: string,
-    @Body() trainerData: PersonalTrainerDto,
+    @Body() trainerData: UpdatePersonalTrainerDto,
   ): Promise<PersonalTrainerModel> {
     try {
       return await this.personalTrainerService.updatePersonalTrainer({
@@ -97,6 +102,7 @@ export class PersonalTrainerController {
 
   @Delete('delete/:dni')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
   async deleteTrainerAccount(
     @Param('dni') dni: string,

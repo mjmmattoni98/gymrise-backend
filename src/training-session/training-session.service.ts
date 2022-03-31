@@ -37,8 +37,8 @@ export class TrainingSessionService {
   }): Promise<TrainingSessionModel> {
     const { data, id } = params;
     return this.prisma.training_session.update({
-      data: data,
       where: { id: id },
+      data: data,
     });
   }
 

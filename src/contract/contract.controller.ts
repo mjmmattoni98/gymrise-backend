@@ -14,14 +14,17 @@ import { ContractDto } from './dto/contract.dto';
 import { contract as ContractModel, Prisma } from '@prisma/client';
 import { ContractService } from './contract.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateContractDto } from './dto/update-contract.dto';
 
 @Controller('contract')
+@ApiTags('contract')
 export class ContractController {
   constructor(private readonly contractService: ContractService) {}
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
   async getContract(@Param('id') id: string): Promise<ContractModel> {
     try {
@@ -63,6 +66,7 @@ export class ContractController {
 
   @Post('add')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
   async addContract(@Body() sessionData: ContractDto): Promise<ContractModel> {
     try {
@@ -92,10 +96,11 @@ export class ContractController {
 
   @Put('update/:id')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
   async updateContract(
     @Param('id') id: string,
-    @Body() contractSessionData: ContractDto,
+    @Body() contractSessionData: UpdateContractDto,
   ): Promise<ContractModel> {
     try {
       return await this.contractService.updateContract({
@@ -109,6 +114,7 @@ export class ContractController {
 
   @Delete('delete/:id')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
   async deleteContract(@Param('id') id: string): Promise<ContractModel> {
     try {

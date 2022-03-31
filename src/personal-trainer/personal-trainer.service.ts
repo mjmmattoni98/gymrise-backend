@@ -57,8 +57,8 @@ export class PersonalTrainerService {
     }
 
     return this.prisma.personal_trainer.update({
-      data: data,
       where: { dni: dni },
+      data: data,
     });
   }
 

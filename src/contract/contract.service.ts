@@ -36,8 +36,8 @@ export class ContractService {
     const { data, id } = params;
 
     return this.prisma.contract.update({
-      data: data,
       where: { id: id },
+      data: data,
     });
   }
 
