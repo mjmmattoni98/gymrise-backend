@@ -28,7 +28,7 @@ export class UpdateContractDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
   @IsBoolean()
+  @ApiProperty({ required: false, nullable: true })
   accepted: boolean;
 }

@@ -44,6 +44,7 @@ export class PersonalTrainerController {
   }
 
   @Get()
+  @ApiOkResponse({ type: [PersonalTrainerDto] })
   async getTrainers(): Promise<PersonalTrainerModel[]> {
     try {
       return await this.personalTrainerService.getPersonalTrainers();

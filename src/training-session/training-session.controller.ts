@@ -47,6 +47,7 @@ export class TrainingSessionController {
   }
 
   @Get()
+  @ApiOkResponse({ type: [TrainingSessionDto] })
   async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
     try {
       return await this.trainingSessionService.getTrainingSessions();

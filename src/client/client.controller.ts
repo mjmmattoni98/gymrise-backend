@@ -44,6 +44,7 @@ export class ClientController {
   }
 
   @Get()
+  @ApiOkResponse({ type: [ClientDto] })
   async getClients(): Promise<ClientModel[]> {
     try {
       return await this.clientService.getClients();

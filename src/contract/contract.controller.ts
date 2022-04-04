@@ -36,6 +36,7 @@ export class ContractController {
 
   @Get('/trainer/:dni_trainer/client/:dni_client')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [ContractDto] })
   @ApiBearerAuth()
   async getContractsByDniTrainerClient(
     @Param('dni_trainer') dni_trainer: string,
@@ -55,6 +56,7 @@ export class ContractController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [ContractDto] })
   @ApiBearerAuth()
   async getAllContracts(): Promise<ContractModel[]> {
     try {
