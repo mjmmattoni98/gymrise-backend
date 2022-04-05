@@ -13,13 +13,15 @@ import {
 import {
   PersonalTrainerService,
   PersonalTrainerUpdateError,
+  PersonalTrainerCreationError,
 } from './personal-trainer.service';
-import { PersonalTrainerCreationError } from './personal-trainer.service';
 import { PersonalTrainerDto } from './dto/personal-trainer.dto';
 import { personal_trainer as PersonalTrainerModel } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UpdatePersonalTrainerDto } from './dto/update-personal-trainer.dto';
+import { Roles } from '../users/roles/roles.decorator';
+import { Role } from '../users/roles/role.enum';
 
 @Controller('personal-trainer')
 @ApiTags('personal-trainer')
@@ -29,6 +31,7 @@ export class PersonalTrainerController {
   ) {}
 
   @Get(':dni')
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()

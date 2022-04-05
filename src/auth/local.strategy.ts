@@ -6,6 +6,7 @@ import {
   client as ClientModel,
   personal_trainer as PersonalTrainerModel,
 } from '@prisma/client';
+import { UserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -13,9 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  async validate(payload: {
-    loginInfo: string;
-  }): Promise<ClientModel | PersonalTrainerModel> {
+  async validate(payload: { loginInfo: string }): Promise<UserDto> {
     const user = await this.authService.validateUser(payload.loginInfo);
 
     if (!user) {

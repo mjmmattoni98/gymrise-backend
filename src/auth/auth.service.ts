@@ -12,6 +12,8 @@ import {
   client as ClientModel,
   personal_trainer as PersonalTrainerModel,
 } from '@prisma/client';
+import { Role } from '../users/roles/role.enum';
+import { UserDto } from '../users/dto/user.dto';
 
 export enum UserLoginError {
   ClientAlreadyLogin,
@@ -38,15 +40,14 @@ export class AuthService {
     }
 
     return {
-      accessToken: this.jwtService.sign({ userId: user.email }),
+      accessToken: this.jwtService.sign({
+        userId: user.email,
+        role: user.role,
+      }),
     };
   }
 
-  async validateUser(
-    email: string,
-  ): Promise<ClientModel | PersonalTrainerModel> {
-    const user = await this.usersService.getUser(email);
-
-    return user;
+  async validateUser(email: string): Promise<UserDto> {
+    return this.usersService.getUser(email);
   }
 }
