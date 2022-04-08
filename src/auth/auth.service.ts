@@ -8,12 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { Auth } from './entity/auth.entity';
-import {
-  client as ClientModel,
-  personal_trainer as PersonalTrainerModel,
-} from '@prisma/client';
-import { Role } from '../users/roles/role.enum';
-import { UserDto } from '../users/dto/user.dto';
+import { User } from '../users/dto/user.entity';
 
 export enum UserLoginError {
   ClientAlreadyLogin,
@@ -41,13 +36,20 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign({
-        userId: user.email,
+        email: user.email,
+        password: user.password,
         role: user.role,
       }),
     };
   }
 
-  async validateUser(email: string): Promise<UserDto> {
-    return this.usersService.getUser(email);
+  async validateUser(email: string): Promise<User> {
+    const user = this.usersService.getUser(email);
+
+    if (!user) {
+      throw new UnauthorizedException(`No user found for email: ${email}`);
+    }
+
+    return user;
   }
 }

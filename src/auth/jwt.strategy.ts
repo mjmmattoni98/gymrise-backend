@@ -3,29 +3,31 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import {
-  client as ClientModel,
-  personal_trainer as PersonalTrainerModel,
-} from '@prisma/client';
-import { UserDto } from '../users/dto/user.dto';
+import { User } from '../users/dto/user.entity';
+import { Role } from '../users/roles/role.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private auth: AuthService, private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // usernameField: 'email',
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET'),
     });
   }
 
-  async validate(payload: { userId: string }): Promise<UserDto> {
-    const user = await this.auth.validateUser(payload.userId);
+  async validate(payload: {
+    email: string;
+    password: string;
+    role: Role;
+  }): Promise<User> {
+    const user = await this.auth.validateUser(payload.email);
 
     if (!user) {
-      console.log(`No user found for email: ${payload.userId}`);
+      console.log(`No user found for email: ${payload.email}`);
       throw new UnauthorizedException(
-        `No user found for email: ${payload.userId}`,
+        `No user found for email: ${payload.email}`,
       );
     }
 

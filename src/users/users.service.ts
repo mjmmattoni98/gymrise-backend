@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { UserDto } from './dto/user.dto';
+import { User } from './dto/user.entity';
 import { Role } from './roles/role.enum';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async getUser(email: string): Promise<UserDto> {
+  async getUser(email: string): Promise<User> {
     const client = await this.prisma.client.findUnique({
       where: { email: email },
     });
