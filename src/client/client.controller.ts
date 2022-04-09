@@ -29,15 +29,19 @@ import { UpdateClientDto } from './dto/update-client.dto';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  @Get(':dni')
+  @Get(':id')
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
-  async getClient(@Param('dni') dni: string): Promise<ClientModel> {
+  async getClient(@Param('id') id: string): Promise<ClientModel> {
     try {
-      return await this.clientService.getClientByDni(dni);
+      const email_regexp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
+      if (email_regexp.test(id.toUpperCase())) {
+        return await this.clientService.getClientByEmail(id);
+      }
+      return await this.clientService.getClientByDni(id);
     } catch (error) {
       throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
     }
