@@ -43,11 +43,17 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string): Promise<User> {
-    const user = this.usersService.getUser(email);
+  async validateUser(email: string, password: string): Promise<User> {
+    const user = await this.usersService.getUser(email);
 
     if (!user) {
       throw new UnauthorizedException(`No user found for email: ${email}`);
+    }
+
+    const isPasswordValid = password === user.password;
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(`Invalid password for email: ${email}`);
     }
 
     return user;

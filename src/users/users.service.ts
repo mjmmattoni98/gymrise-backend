@@ -27,7 +27,7 @@ export class UsersService {
     return {
       email: client.email,
       password: client.password,
-      role: Role.PERSONAL_TRAINER,
+      role: Role.CLIENT,
     };
   }
 }

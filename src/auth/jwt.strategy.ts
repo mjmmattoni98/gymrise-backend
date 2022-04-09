@@ -22,15 +22,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     password: string;
     role: Role;
   }): Promise<User> {
-    const user = await this.auth.validateUser(payload.email);
-
-    if (!user) {
-      console.log(`No user found for email: ${payload.email}`);
-      throw new UnauthorizedException(
-        `No user found for email: ${payload.email}`,
-      );
-    }
-
-    return user;
+    return this.auth.validateUser(payload.email, payload.password);
   }
 }

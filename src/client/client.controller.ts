@@ -30,8 +30,8 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Get(':dni')
-  @Roles(Role.CLIENT)
   @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
