@@ -20,12 +20,14 @@ export class UsersService {
       }
       return {
         email: (await trainer).email,
+        dni: (await trainer).dni,
         password: (await trainer).password,
         role: Role.PERSONAL_TRAINER,
       };
     }
     return {
       email: client.email,
+      dni: client.dni,
       password: client.password,
       role: Role.CLIENT,
     };

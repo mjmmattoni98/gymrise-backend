@@ -7,8 +7,8 @@ import {
   Put,
   Delete,
   UseGuards,
-  HttpException,
-  HttpStatus,
+  NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import {
   ClientCreationError,
@@ -24,6 +24,7 @@ import { Role } from 'src/users/roles/role.enum';
 import { RolesGuard } from 'src/users/roles/roles.guard';
 import { UpdateClientDto } from './dto/update-client.dto';
 
+const EMAIL_REGEXP = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
 @Controller('client')
 @ApiTags('client')
 export class ClientController {
@@ -37,13 +38,12 @@ export class ClientController {
   @ApiBearerAuth()
   async getClient(@Param('id') id: string): Promise<ClientModel> {
     try {
-      const email_regexp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
-      if (email_regexp.test(id.toUpperCase())) {
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.clientService.getClientByEmail(id);
       }
       return await this.clientService.getClientByDni(id);
     } catch (error) {
-      throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('Client not found');
     }
   }
 
@@ -65,51 +65,58 @@ export class ClientController {
     } catch (error) {
       switch (error) {
         case ClientCreationError.ClientAlreadySignedUp:
-          throw new HttpException(
-            'Client has already signed up',
-            HttpStatus.BAD_REQUEST,
-          );
+          throw new ConflictException('Client already signed up');
         default:
           throw error;
       }
     }
   }
 
-  @Put('update/:dni')
+  @Put('update/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
   async updateClient(
-    @Param('dni') dni: string,
+    @Param('id') id: string,
     @Body() clientData: UpdateClientDto,
   ): Promise<ClientModel> {
     try {
-      return await this.clientService.updateClient({ dni, data: clientData });
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
+        return await this.clientService.updateClientByEmail({
+          email: id,
+          data: clientData,
+        });
+      }
+      return await this.clientService.updateClientByDni({
+        dni: id,
+        data: clientData,
+      });
     } catch (error) {
       switch (error) {
         case ClientUpdateError.ClientDoesntExist:
-          throw new HttpException(
-            "Client doesn't found to update",
-            HttpStatus.NOT_FOUND,
-          );
+          throw new NotFoundException('Client not found');
         default:
           throw error;
       }
     }
   }
 
-  @Delete('delete/:dni')
+  @Delete('delete/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ClientDto })
   @ApiBearerAuth()
-  async deleteClientAccount(@Param('dni') dni: string): Promise<ClientModel> {
+  async deleteClientAccount(@Param('id') id: string): Promise<ClientModel> {
     try {
-      return await this.clientService.deleteClient(dni);
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
+        return await this.clientService.deleteClientByEmail(id);
+      }
+      return await this.clientService.deleteClientByDni(id);
     } catch (error) {
-      throw new HttpException(
-        "Client doesn't found to delete",
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('Client not found');
     }
   }
 }
