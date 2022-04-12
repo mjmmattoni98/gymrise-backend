@@ -5,4 +5,5 @@ export class User {
   dni: string;
   password: string;
   role: Role;
+  name: string;
 }

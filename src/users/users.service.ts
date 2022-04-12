@@ -23,6 +23,7 @@ export class UsersService {
         dni: (await trainer).dni,
         password: (await trainer).password,
         role: Role.PERSONAL_TRAINER,
+        name: (await trainer).name,
       };
     }
     return {
@@ -30,6 +31,7 @@ export class UsersService {
       dni: client.dni,
       password: client.password,
       role: Role.CLIENT,
+      name: client.name,
     };
   }
 }

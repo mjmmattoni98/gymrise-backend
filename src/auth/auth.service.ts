@@ -41,6 +41,8 @@ export class AuthService {
         password: user.password,
         role: user.role,
       }),
+      dni: user.dni,
+      name: user.name,
     };
   }
 
