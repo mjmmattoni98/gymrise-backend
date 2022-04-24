@@ -24,7 +24,7 @@ import { Role } from 'src/users/roles/role.enum';
 import { RolesGuard } from 'src/users/roles/roles.guard';
 import { UpdateClientDto } from './dto/update-client.dto';
 
-const EMAIL_REGEXP = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/;
+const EMAIL_REGEXP = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/; // prueba
 @Controller('client')
 @ApiTags('client')
 export class ClientController {
