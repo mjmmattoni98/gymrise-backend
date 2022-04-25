@@ -69,7 +69,7 @@ export class TrainingSessionController {
 
   @Get('client/:dni')
   @UseGuards(RolesGuard)
-  @Roles(Role.PERSONAL_TRAINER)
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [TrainingSessionDto] })
   @ApiBearerAuth()
