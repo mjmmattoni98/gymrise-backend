@@ -91,6 +91,7 @@ export class TrainingSessionController {
   @Get('current')
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiBearerAuth()
   async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
     try {
       return await this.trainingSessionService.getTrainingSessionsAvailable();
