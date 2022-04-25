@@ -18,8 +18,14 @@ export enum PersonalTrainerUpdateError {
 export class PersonalTrainerService {
   constructor(private prisma: PrismaService) {}
 
-  async getPersonalTrainer(dni: string): Promise<PersonalTrainerModel> {
+  async getPersonalTrainerByDni(dni: string): Promise<PersonalTrainerModel> {
     return this.prisma.personal_trainer.findUnique({ where: { dni: dni } });
+  }
+
+  async getPersonalTrainerByEmail(
+    email: string,
+  ): Promise<PersonalTrainerModel> {
+    return this.prisma.personal_trainer.findUnique({ where: { email: email } });
   }
 
   async getPersonalTrainers(): Promise<PersonalTrainerModel[]> {
@@ -44,7 +50,7 @@ export class PersonalTrainerService {
     return this.prisma.personal_trainer.create({ data });
   }
 
-  async updatePersonalTrainer(params: {
+  async updatePersonalTrainerByDni(params: {
     dni: string;
     data: Prisma.personal_trainerUpdateInput;
   }): Promise<PersonalTrainerModel> {
@@ -62,7 +68,31 @@ export class PersonalTrainerService {
     });
   }
 
-  async deletePersonalTrainer(dni: string): Promise<PersonalTrainerModel> {
+  async updatePersonalTrainerByEmail(params: {
+    email: string;
+    data: Prisma.personal_trainerUpdateInput;
+  }): Promise<PersonalTrainerModel> {
+    const { data, email } = params;
+    const foundPersonalTrainer = await this.prisma.personal_trainer.findUnique({
+      where: { email: email },
+    });
+    if (!foundPersonalTrainer) {
+      throw PersonalTrainerUpdateError.PersonalTrainerDoesntExist;
+    }
+
+    return this.prisma.personal_trainer.update({
+      where: { email: email },
+      data: data,
+    });
+  }
+
+  async deletePersonalTrainerByDni(dni: string): Promise<PersonalTrainerModel> {
     return this.prisma.personal_trainer.delete({ where: { dni: dni } });
+  }
+
+  async deletePersonalTrainerByEmail(
+    email: string,
+  ): Promise<PersonalTrainerModel> {
+    return this.prisma.personal_trainer.delete({ where: { email: email } });
   }
 }

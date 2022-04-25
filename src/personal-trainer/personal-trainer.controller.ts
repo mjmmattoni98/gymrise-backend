@@ -22,6 +22,8 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UpdatePersonalTrainerDto } from './dto/update-personal-trainer.dto';
 import { Roles } from '../users/roles/roles.decorator';
 import { Role } from '../users/roles/role.enum';
+import { EMAIL_REGEXP } from '../const';
+import { RolesGuard } from '../users/roles/roles.guard';
 
 @Controller('personal-trainer')
 @ApiTags('personal-trainer')
@@ -30,14 +32,18 @@ export class PersonalTrainerController {
     private readonly personalTrainerService: PersonalTrainerService,
   ) {}
 
-  @Get(':dni')
-  @Roles(Role.CLIENT)
+  @Get(':id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
-  async getTrainer(@Param('dni') dni: string): Promise<PersonalTrainerModel> {
+  async getTrainer(@Param('id') id: string): Promise<PersonalTrainerModel> {
     try {
-      return await this.personalTrainerService.getPersonalTrainer(dni);
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
+        return await this.personalTrainerService.getPersonalTrainerByEmail(id);
+      }
+      return await this.personalTrainerService.getPersonalTrainerByDni(id);
     } catch (error) {
       throw new HttpException(
         'Personal trainer not found',
@@ -78,17 +84,25 @@ export class PersonalTrainerController {
     }
   }
 
-  @Put('update/:dni')
+  @Put('update/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
   async updateTrainer(
-    @Param('dni') dni: string,
+    @Param('id') id: string,
     @Body() trainerData: UpdatePersonalTrainerDto,
   ): Promise<PersonalTrainerModel> {
     try {
-      return await this.personalTrainerService.updatePersonalTrainer({
-        dni,
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
+        return await this.personalTrainerService.updatePersonalTrainerByEmail({
+          email: id,
+          data: trainerData,
+        });
+      }
+      return await this.personalTrainerService.updatePersonalTrainerByDni({
+        dni: id,
         data: trainerData,
       });
     } catch (error) {
@@ -104,15 +118,22 @@ export class PersonalTrainerController {
     }
   }
 
-  @Delete('delete/:dni')
+  @Delete('delete/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
   async deleteTrainerAccount(
-    @Param('dni') dni: string,
+    @Param('id') id: string,
   ): Promise<PersonalTrainerModel> {
     try {
-      return await this.personalTrainerService.deletePersonalTrainer(dni);
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
+        return await this.personalTrainerService.deletePersonalTrainerByEmail(
+          id,
+        );
+      }
+      return await this.personalTrainerService.deletePersonalTrainerByDni(id);
     } catch (error) {
       throw new Error('Error while deleting the personal trainer account');
     }

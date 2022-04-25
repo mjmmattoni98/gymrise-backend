@@ -16,6 +16,9 @@ import { ContractService } from './contract.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateContractDto } from './dto/update-contract.dto';
+import { Roles } from '../users/roles/roles.decorator';
+import { Role } from '../users/roles/role.enum';
+import { RolesGuard } from '../users/roles/roles.guard';
 
 @Controller('contract')
 @ApiTags('contract')
@@ -34,7 +37,7 @@ export class ContractController {
     }
   }
 
-  @Get('/trainer/:dni_trainer/client/:dni_client')
+  @Get('trainer/:dni_trainer/client/:dni_client')
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [ContractDto] })
   @ApiBearerAuth()
@@ -54,11 +57,43 @@ export class ContractController {
     }
   }
 
+  @Get('trainer/:dni')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [ContractDto] })
+  @ApiBearerAuth()
+  async getContractsTrainer(
+    @Param('dni') dni: string,
+  ): Promise<ContractModel[]> {
+    try {
+      return await this.contractService.getContractsTrainer(dni);
+    } catch (error) {
+      throw new Error('Error while getting all contracts');
+    }
+  }
+
+  @Get('client/:dni')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [ContractDto] })
+  @ApiBearerAuth()
+  async getContractsClient(
+    @Param('dni') dni: string,
+  ): Promise<ContractModel[]> {
+    try {
+      return await this.contractService.getContractsClient(dni);
+    } catch (error) {
+      throw new Error('Error while getting all contracts');
+    }
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [ContractDto] })
   @ApiBearerAuth()
-  async getAllContracts(): Promise<ContractModel[]> {
+  async getContracts(): Promise<ContractModel[]> {
     try {
       return await this.contractService.getContracts();
     } catch (error) {

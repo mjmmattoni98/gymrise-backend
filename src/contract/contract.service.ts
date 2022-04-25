@@ -10,6 +10,18 @@ export class ContractService {
     return this.prisma.contract.findUnique({ where: { id: id } });
   }
 
+  async getContractsTrainer(dni: string): Promise<ContractModel[]> {
+    return this.prisma.contract.findMany({
+      where: { dni_trainer: dni },
+    });
+  }
+
+  async getContractsClient(dni: string): Promise<ContractModel[]> {
+    return this.prisma.contract.findMany({
+      where: { dni_client: dni },
+    });
+  }
+
   async getContractByDniClientTrainer(
     dni_trainer: string,
     dni_client: string,

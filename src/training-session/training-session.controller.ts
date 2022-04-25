@@ -13,12 +13,16 @@ import {
 import { TrainingSessionDto } from './dto/training-session.dto';
 import {
   training_session as TrainingSessionModel,
+  training_session_client as TrainingSessionClientModel,
   Prisma,
 } from '@prisma/client';
 import { TrainingSessionService } from './training-session.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateTrainingSessionDto } from './dto/update-training-session.dto';
+import { RolesGuard } from '../users/roles/roles.guard';
+import { Role } from '../users/roles/role.enum';
+import { Roles } from '../users/roles/roles.decorator';
 
 @Controller('training-session')
 @ApiTags('training-session')
@@ -46,6 +50,54 @@ export class TrainingSessionController {
     }
   }
 
+  @Get('trainer/:dni')
+  @ApiOkResponse({ type: [TrainingSessionDto] })
+  async getTrainingSessionsTrainer(
+    @Param('dni') dni: string,
+  ): Promise<TrainingSessionModel[]> {
+    try {
+      return await this.trainingSessionService.getTrainingSessionsForTrainer(
+        dni,
+      );
+    } catch (error) {
+      throw new HttpException(
+        `Training sessions not found for trainer with dni ${dni}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  @Get('client/:dni')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiBearerAuth()
+  async getTrainingSessionsClient(
+    @Param('dni') dni: string,
+  ): Promise<TrainingSessionModel[]> {
+    try {
+      return await this.trainingSessionService.getTrainingSessionsForClient(
+        dni,
+      );
+    } catch (error) {
+      throw new HttpException(
+        `Training sessions not found for client with dni ${dni}`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  @Get('current')
+  @ApiOkResponse({ type: [TrainingSessionDto] })
+  async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
+    try {
+      return await this.trainingSessionService.getTrainingSessionsAvailable();
+    } catch (error) {
+      throw new Error('Error while getting all training sessions');
+    }
+  }
+
   @Get()
   @ApiOkResponse({ type: [TrainingSessionDto] })
   async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
@@ -57,6 +109,8 @@ export class TrainingSessionController {
   }
 
   @Post('add')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
@@ -83,7 +137,29 @@ export class TrainingSessionController {
     }
   }
 
+  @Post('session/:id/client/:dni')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: TrainingSessionDto })
+  @ApiBearerAuth()
+  async addClientToSession(
+    @Param('id') id: string,
+    @Param('dni') dni: string,
+  ): Promise<TrainingSessionClientModel> {
+    try {
+      return await this.trainingSessionService.addClientToSession({
+        id: Number(id),
+        dni,
+      });
+    } catch (error) {
+      throw new Error('Error while adding client to session');
+    }
+  }
+
   @Put('update/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
@@ -102,6 +178,8 @@ export class TrainingSessionController {
   }
 
   @Delete('delete/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
