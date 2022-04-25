@@ -90,7 +90,7 @@ export class TrainingSessionController {
 
   @Get('current')
   @ApiOkResponse({ type: [TrainingSessionDto] })
-  async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
+  async getSessionsAvailable(): Promise<TrainingSessionModel[]> {
     try {
       return await this.trainingSessionService.getTrainingSessionsAvailable();
     } catch (error) {
