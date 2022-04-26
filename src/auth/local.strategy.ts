@@ -7,6 +7,7 @@ import {
   personal_trainer as PersonalTrainerModel,
 } from '@prisma/client';
 import { User } from '../users/dto/user.entity';
+import { Role } from '../users/roles/role.enum';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +16,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { loginInfo: string }): Promise<User> {
-    const user = await this.authService.validateUser(payload.loginInfo, '');
+    const user = await this.authService.validateUser(
+      payload.loginInfo,
+      '',
+      Role.CLIENT,
+    );
 
     if (!user) {
       throw new UnauthorizedException(

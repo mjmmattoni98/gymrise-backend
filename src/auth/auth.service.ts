@@ -9,6 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { Auth } from './entity/auth.entity';
 import { User } from '../users/dto/user.entity';
+import { Role } from '../users/roles/role.enum';
 
 export enum UserLoginError {
   ClientAlreadyLogin,
@@ -21,8 +22,8 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async loginJwt({ email, password }: LoginDto): Promise<Auth> {
-    const user = await this.usersService.getUser(email);
+  async loginJwt({ email, password, role }: LoginDto): Promise<Auth> {
+    const user = await this.usersService.getUser(email, role);
 
     if (!user) {
       throw new NotFoundException(`No user found for email: ${email}`);
@@ -46,8 +47,12 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.usersService.getUser(email);
+  async validateUser(
+    email: string,
+    password: string,
+    role: Role,
+  ): Promise<User> {
+    const user = await this.usersService.getUser(email, role);
 
     if (!user) {
       throw new UnauthorizedException(`No user found for email: ${email}`);

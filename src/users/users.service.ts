@@ -7,31 +7,34 @@ import { Role } from './roles/role.enum';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async getUser(email: string): Promise<User> {
-    const client = await this.prisma.client.findUnique({
-      where: { email: email },
-    });
-    if (!client) {
+  async getUser(email: string, role: Role): Promise<User> {
+    if (role === Role.CLIENT) {
+      const client = await this.prisma.client.findUnique({
+        where: { email: email },
+      });
+      if (client) {
+        return {
+          email: client.email,
+          dni: client.dni,
+          password: client.password,
+          role: Role.CLIENT,
+          name: client.name,
+        };
+      }
+    } else if (role === Role.PERSONAL_TRAINER) {
       const trainer = this.prisma.personal_trainer.findUnique({
         where: { email: email },
       });
-      if (!trainer) {
-        return null;
+      if (trainer) {
+        return {
+          email: (await trainer).email,
+          dni: (await trainer).dni,
+          password: (await trainer).password,
+          role: Role.PERSONAL_TRAINER,
+          name: (await trainer).name,
+        };
       }
-      return {
-        email: (await trainer).email,
-        dni: (await trainer).dni,
-        password: (await trainer).password,
-        role: Role.PERSONAL_TRAINER,
-        name: (await trainer).name,
-      };
     }
-    return {
-      email: client.email,
-      dni: client.dni,
-      password: client.password,
-      role: Role.CLIENT,
-      name: client.name,
-    };
+    return null;
   }
 }
