@@ -70,11 +70,8 @@ export class TrainingSessionService {
   async createSession(
     data: Prisma.training_sessionCreateInput,
   ): Promise<TrainingSessionModel> {
-    console.log(this.prisma.training_session.create({
-      data: data
-    }));
     return this.prisma.training_session.create({
-      data: data
+      data: data,
     });
   }
 
