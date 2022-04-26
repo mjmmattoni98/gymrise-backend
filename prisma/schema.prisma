@@ -62,7 +62,8 @@ model personal_trainer {
 
 model training_session {
   id                      Int                       @id(map: "training_session_pk") @default(autoincrement())
-  date_time               DateTime                  @db.Timestamp(6)
+  date                    DateTime                  @db.Date
+  time                    DateTime                  @db.Time(6)
   dni                     String                    @db.VarChar(9)
   description             String
   price                   Int

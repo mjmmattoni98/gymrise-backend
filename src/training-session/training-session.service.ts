@@ -20,14 +20,6 @@ export class TrainingSessionService {
     return this.prisma.training_session.findUnique({ where: { id: id } });
   }
 
-  async getTrainingSessionByDate(
-    date_time: Date,
-  ): Promise<TrainingSessionModel[]> {
-    return this.prisma.training_session.findMany({
-      where: { date_time: date_time },
-    });
-  }
-
   async getTrainingSessions(): Promise<TrainingSessionModel[]> {
     this.logger.log('Service: getTrainingSessions');
     return this.prisma.training_session.findMany();
@@ -60,11 +52,9 @@ export class TrainingSessionService {
   }
 
   async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
-    this.logger.log('Service: getTrainingSessionsAvailable');
     const sessions = await this.prisma.training_session.findMany();
     const currentDate = new Date();
-    this.logger.log(`Current date: ${currentDate}`);
-    return sessions.filter((session) => session.date_time > currentDate);
+    return sessions.filter((session) => session.date > currentDate);
   }
 
   async createSession(

@@ -98,7 +98,7 @@ export class TrainingSessionController {
     @Param('dni_client') dni_client: string,
   ): Promise<TrainingSessionModel[]> {
     try {
-      return await this.trainingSessionService.getTrainingSessionsAvailable(dni_trainer);
+      return await this.trainingSessionService.getTrainingSessionsAvailable();
     } catch (error) {
       throw new Error('Error while getting all training sessions');
     }
@@ -126,7 +126,8 @@ export class TrainingSessionController {
   ): Promise<TrainingSessionModel> {
     try {
       const prismaSessionObject: Prisma.training_sessionCreateInput = {
-        date_time: sessionData.date_time,
+        date: sessionData.date,
+        time: sessionData.time,
         description: sessionData.description,
         price: sessionData.price,
         personal_trainer: {

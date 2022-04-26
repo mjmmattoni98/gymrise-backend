@@ -58,7 +58,8 @@ CREATE TABLE contract (
 
 CREATE TABLE training_session (
     id SERIAL,
-    date_time TIMESTAMP NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
     dni VARCHAR(9) NOT NULL,
     description TEXT NOT NULL,
     price INTEGER NOT NULL,
