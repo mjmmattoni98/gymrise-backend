@@ -125,6 +125,8 @@ export class TrainingSessionController {
     @Body() sessionData: TrainingSessionDto,
   ): Promise<TrainingSessionModel> {
     try {
+      this.logger.log(`session.date: ${sessionData.date}`);
+      this.logger.log(`session.time: ${sessionData.time}`);
       const prismaSessionObject: Prisma.training_sessionCreateInput = {
         date: sessionData.date,
         time: sessionData.time,
