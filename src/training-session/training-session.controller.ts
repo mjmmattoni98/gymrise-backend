@@ -91,10 +91,8 @@ export class TrainingSessionController {
     }
   }
 
-  @Get('available')
-  @UseGuards(JwtAuthGuard)
+  @Get()
   @ApiOkResponse({ type: [TrainingSessionDto] })
-  @ApiBearerAuth()
   async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
     try {
       this.logger.log('Controller: Getting all training sessions available');
@@ -104,7 +102,7 @@ export class TrainingSessionController {
     }
   }
 
-  @Get()
+/*  @Get()
   @ApiOkResponse({ type: [TrainingSessionDto] })
   async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
     try {
@@ -113,7 +111,7 @@ export class TrainingSessionController {
     } catch (error) {
       throw new Error('Error while getting all training sessions');
     }
-  }
+  }*/
 
   @Post('add')
   @UseGuards(RolesGuard)
