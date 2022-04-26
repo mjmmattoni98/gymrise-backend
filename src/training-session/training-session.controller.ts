@@ -91,7 +91,11 @@ export class TrainingSessionController {
     }
   }
 
+<<<<<<< HEAD
   @Get('available')
+=======
+  @Get('current')
+>>>>>>> e6ee5b68db4224d41ec60a33b701c17fff0a70a6
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [TrainingSessionDto] })
   @ApiBearerAuth()
