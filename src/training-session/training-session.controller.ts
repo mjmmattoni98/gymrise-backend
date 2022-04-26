@@ -91,9 +91,12 @@ export class TrainingSessionController {
     }
   }
 
-  @Get()
+  @Get('available/:dni_trainer/client/:dni_client')
   @ApiOkResponse({ type: [TrainingSessionDto] })
-  async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
+  async getTrainingSessionsAvailable(
+    @Param('dni_trainer') dni_trainer: string,
+    @Param('dni_client') dni_client: string,
+  ): Promise<TrainingSessionModel[]> {
     try {
       this.logger.log('Controller: Getting all training sessions available');
       return await this.trainingSessionService.getTrainingSessionsAvailable();
@@ -102,7 +105,7 @@ export class TrainingSessionController {
     }
   }
 
-/*  @Get()
+  @Get()
   @ApiOkResponse({ type: [TrainingSessionDto] })
   async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
     try {
@@ -111,7 +114,7 @@ export class TrainingSessionController {
     } catch (error) {
       throw new Error('Error while getting all training sessions');
     }
-  }*/
+  }
 
   @Post('add')
   @UseGuards(RolesGuard)
