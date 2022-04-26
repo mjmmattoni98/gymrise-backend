@@ -98,8 +98,7 @@ export class TrainingSessionController {
     @Param('dni_client') dni_client: string,
   ): Promise<TrainingSessionModel[]> {
     try {
-      this.logger.log('Controller: Getting all training sessions available');
-      return await this.trainingSessionService.getTrainingSessionsAvailable();
+      return await this.trainingSessionService.getTrainingSessionsAvailable(dni_trainer);
     } catch (error) {
       throw new Error('Error while getting all training sessions');
     }
