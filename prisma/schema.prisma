@@ -61,21 +61,22 @@ model personal_trainer {
 }
 
 model training_session {
-  id                      Int                      @id(map: "training_session_pk") @default(autoincrement())
-  date                    DateTime                 @db.Date
-  time                    DateTime                 @db.Time(6)
-  dni                     String                   @db.VarChar(9)
+  id                      Int                       @id(map: "training_session_pk") @default(autoincrement())
+  date_time               DateTime                  @db.Timestamp(6)
+  dni                     String                    @db.VarChar(9)
   description             String
   price                   Int
-  personal_trainer        personal_trainer         @relation(fields: [dni], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "training_session_fk_trainer")
-  training_session_client training_session_client?
+  personal_trainer        personal_trainer          @relation(fields: [dni], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "training_session_fk_trainer")
+  training_session_client training_session_client[]
 }
 
 model training_session_client {
-  id               Int              @id(map: "training_session_client_pk")
+  id               Int
   dni              String           @db.VarChar(9)
   client           client           @relation(fields: [dni], references: [dni], onDelete: NoAction, onUpdate: NoAction, map: "training_session_client_fk_client")
   training_session training_session @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "training_session_client_fk_session")
+
+  @@id([id, dni], map: "training_session_client_pk")
 }
 
 model training_skill {

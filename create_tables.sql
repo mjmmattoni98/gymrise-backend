@@ -58,8 +58,7 @@ CREATE TABLE contract (
 
 CREATE TABLE training_session (
     id SERIAL,
-    date DATE NOT NULL,
-    time TIME NOT NULL,
+    date_time TIMESTAMP NOT NULL,
     dni VARCHAR(9) NOT NULL,
     description TEXT NOT NULL,
     price INTEGER NOT NULL,
@@ -70,7 +69,7 @@ CREATE TABLE training_session (
 CREATE TABLE training_session_client (
     id INTEGER NOT NULL,
     dni VARCHAR(9) NOT NULL,
-    CONSTRAINT training_session_client_pk PRIMARY KEY (id),
+    CONSTRAINT training_session_client_pk PRIMARY KEY (id, dni),
     CONSTRAINT training_session_client_fk_client FOREIGN KEY (dni) REFERENCES client (dni),
     CONSTRAINT training_session_client_fk_session FOREIGN KEY (id) REFERENCES training_session (id)
 );

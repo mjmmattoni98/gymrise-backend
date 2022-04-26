@@ -11,12 +11,7 @@ export class TrainingSessionDto {
   @IsNotEmpty()
   @IsDate()
   @ApiProperty()
-  date: Date;
-
-  @IsNotEmpty()
-  @IsDate()
-  @ApiProperty()
-  time: Date;
+  date_time: Date;
 
   @IsNotEmpty()
   @ApiProperty()

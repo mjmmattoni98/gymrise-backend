@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import {
   training_session as TrainingSessionModel,
@@ -12,17 +12,24 @@ export enum TrainingSessionUpdateError {
 
 @Injectable()
 export class TrainingSessionService {
+  logger: Logger = new Logger('TrainingSessionService');
+
   constructor(private prisma: PrismaService) {}
 
   async getTrainingSessionById(id: number): Promise<TrainingSessionModel> {
     return this.prisma.training_session.findUnique({ where: { id: id } });
   }
 
-  async getTrainingSessionByDate(date: Date): Promise<TrainingSessionModel[]> {
-    return this.prisma.training_session.findMany({ where: { date: date } });
+  async getTrainingSessionByDate(
+    date_time: Date,
+  ): Promise<TrainingSessionModel[]> {
+    return this.prisma.training_session.findMany({
+      where: { date_time: date_time },
+    });
   }
 
   async getTrainingSessions(): Promise<TrainingSessionModel[]> {
+    this.logger.log('Service: getTrainingSessions');
     return this.prisma.training_session.findMany();
   }
 
@@ -42,16 +49,22 @@ export class TrainingSessionService {
     return this.prisma.training_session.findMany({
       where: {
         training_session_client: {
-          dni: dni,
+          some: {
+            client: {
+              dni: dni,
+            },
+          },
         },
       },
     });
   }
 
   async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
+    this.logger.log('Service: getTrainingSessionsAvailable');
     const sessions = await this.prisma.training_session.findMany();
     const currentDate = new Date();
-    return sessions.filter((session) => session.date > currentDate);
+    this.logger.log(`Current date: ${currentDate}`);
+    return sessions.filter((session) => session.date_time > currentDate);
   }
 
   async createSession(
@@ -76,6 +89,21 @@ export class TrainingSessionService {
           connect: {
             dni: dni,
           },
+        },
+      },
+    });
+  }
+
+  async removeClientFromSession(params: {
+    id: number;
+    dni: string;
+  }): Promise<TrainingSessionClientModel> {
+    const { id, dni } = params;
+    return this.prisma.training_session_client.delete({
+      where: {
+        id_dni: {
+          id: id,
+          dni: dni,
         },
       },
     });

@@ -5,6 +5,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Logger,
   Param,
   Post,
   Put,
@@ -27,6 +28,8 @@ import { Roles } from '../users/roles/roles.decorator';
 @Controller('training-session')
 @ApiTags('training-session')
 export class TrainingSessionController {
+  logger: Logger = new Logger('TrainingSessionController');
+
   constructor(
     private readonly trainingSessionService: TrainingSessionService,
   ) {}
@@ -69,7 +72,7 @@ export class TrainingSessionController {
 
   @Get('client/:dni')
   @UseGuards(RolesGuard)
-  @Roles(Role.PERSONAL_TRAINER)
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [TrainingSessionDto] })
   @ApiBearerAuth()
@@ -88,10 +91,13 @@ export class TrainingSessionController {
     }
   }
 
-  @Get('current')
+  @Get('available')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiBearerAuth()
   async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
     try {
+      this.logger.log('Controller: Getting all training sessions available');
       return await this.trainingSessionService.getTrainingSessionsAvailable();
     } catch (error) {
       throw new Error('Error while getting all training sessions');
@@ -102,6 +108,7 @@ export class TrainingSessionController {
   @ApiOkResponse({ type: [TrainingSessionDto] })
   async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
     try {
+      this.logger.log('Controller: Getting all training sessions');
       return await this.trainingSessionService.getTrainingSessions();
     } catch (error) {
       throw new Error('Error while getting all training sessions');
@@ -119,8 +126,7 @@ export class TrainingSessionController {
   ): Promise<TrainingSessionModel> {
     try {
       const prismaSessionObject: Prisma.training_sessionCreateInput = {
-        date: sessionData.date,
-        time: sessionData.time,
+        date_time: sessionData.date_time,
         description: sessionData.description,
         price: sessionData.price,
         personal_trainer: {
@@ -139,7 +145,7 @@ export class TrainingSessionController {
 
   @Post('session/:id/client/:dni')
   @UseGuards(RolesGuard)
-  @Roles(Role.PERSONAL_TRAINER)
+  @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
@@ -174,6 +180,26 @@ export class TrainingSessionController {
       });
     } catch (error) {
       throw new Error('Error while updating the training session');
+    }
+  }
+
+  @Delete('delete/:id/client/:dni')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: TrainingSessionDto })
+  @ApiBearerAuth()
+  async removeClientFromSession(
+    @Param('id') id: string,
+    @Param('dni') dni: string,
+  ): Promise<TrainingSessionClientModel> {
+    try {
+      return await this.trainingSessionService.removeClientFromSession({
+        id: Number(id),
+        dni,
+      });
+    } catch (error) {
+      throw new Error('Error while removing client from session');
     }
   }
 
