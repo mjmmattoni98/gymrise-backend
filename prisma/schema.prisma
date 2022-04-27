@@ -88,16 +88,16 @@ model training_skill {
 }
 
 enum sex {
-  MALE
-  FEMALE
-  OTHER
+  Hombre
+  Mujer
+  Otro
 }
 
 enum skill {
-  YOGA
-  CALISTHENICS
-  PILATES
+  Yoga
+  Calistenia
+  Pilates
   HIIT
-  STRENGTH
-  OTHER
+  Fuerza
+  Otro
 }

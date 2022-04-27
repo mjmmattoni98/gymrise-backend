@@ -42,7 +42,7 @@ export class PersonalTrainerController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.personalTrainerService.getPersonalTrainerByEmail(
-          id.toUpperCase(),
+          id.toLowerCase(),
         );
       }
       return await this.personalTrainerService.getPersonalTrainerByDni(
@@ -72,7 +72,7 @@ export class PersonalTrainerController {
     @Body() trainerData: PersonalTrainerDto,
   ): Promise<PersonalTrainerModel> {
     try {
-      trainerData.email = trainerData.email.toUpperCase();
+      trainerData.email = trainerData.email.toLowerCase();
       trainerData.dni = trainerData.dni.toUpperCase();
       return await this.personalTrainerService.createPersonalTrainer(
         trainerData,
@@ -103,7 +103,7 @@ export class PersonalTrainerController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.personalTrainerService.updatePersonalTrainerByEmail({
-          email: id.toUpperCase(),
+          email: id.toLowerCase(),
           data: trainerData,
         });
       }
@@ -136,7 +136,7 @@ export class PersonalTrainerController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.personalTrainerService.deletePersonalTrainerByEmail(
-          id.toUpperCase(),
+          id.toLowerCase(),
         );
       }
       return await this.personalTrainerService.deletePersonalTrainerByDni(

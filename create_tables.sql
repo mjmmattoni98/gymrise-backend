@@ -1,5 +1,5 @@
-CREATE TYPE skill as ENUM ('YOGA', 'CALISTHENICS', 'PILATES', 'HIIT', 'STRENGTH', 'OTHER');
-CREATE TYPE sex as ENUM ('MALE', 'FEMALE', 'OTHER');
+CREATE TYPE skill as ENUM ('Yoga', 'Calistenia', 'Pilates', 'HIIT', 'Fuerza', 'Otro');
+CREATE TYPE sex as ENUM ('Hombre', 'Mujer', 'Otro');
 
 CREATE TABLE personal_trainer (
     name VARCHAR(40) NOT NULL,

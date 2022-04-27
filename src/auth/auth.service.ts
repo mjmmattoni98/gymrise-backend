@@ -23,7 +23,7 @@ export class AuthService {
   ) {}
 
   async loginJwt({ email, password, role }: LoginDto): Promise<Auth> {
-    const user = await this.usersService.getUser(email.toUpperCase(), role);
+    const user = await this.usersService.getUser(email.toLowerCase(), role);
 
     if (!user) {
       throw new NotFoundException(`No user found for email: ${email}`);
@@ -52,7 +52,7 @@ export class AuthService {
     password: string,
     role: Role,
   ): Promise<User> {
-    const user = await this.usersService.getUser(email.toUpperCase(), role);
+    const user = await this.usersService.getUser(email.toLowerCase(), role);
 
     if (!user) {
       throw new UnauthorizedException(`No user found for email: ${email}`);

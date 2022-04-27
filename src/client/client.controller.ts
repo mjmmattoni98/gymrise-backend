@@ -39,7 +39,7 @@ export class ClientController {
   async getClient(@Param('id') id: string): Promise<ClientModel> {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
-        return await this.clientService.getClientByEmail(id.toUpperCase());
+        return await this.clientService.getClientByEmail(id.toLowerCase());
       }
       return await this.clientService.getClientByDni(id.toUpperCase());
     } catch (error) {
@@ -62,7 +62,7 @@ export class ClientController {
   async signupClient(@Body() userData: ClientDto): Promise<ClientModel> {
     try {
       userData.dni = userData.dni.toUpperCase();
-      userData.email = userData.email.toUpperCase();
+      userData.email = userData.email.toLowerCase();
       return await this.clientService.createClient(userData);
     } catch (error) {
       switch (error) {
@@ -87,7 +87,7 @@ export class ClientController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.clientService.updateClientByEmail({
-          email: id.toUpperCase(),
+          email: id.toLowerCase(),
           data: clientData,
         });
       }
@@ -114,7 +114,7 @@ export class ClientController {
   async deleteClientAccount(@Param('id') id: string): Promise<ClientModel> {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
-        return await this.clientService.deleteClientByEmail(id.toUpperCase());
+        return await this.clientService.deleteClientByEmail(id.toLowerCase());
       }
       return await this.clientService.deleteClientByDni(id.toUpperCase());
     } catch (error) {
