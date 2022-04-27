@@ -39,9 +39,9 @@ export class ClientController {
   async getClient(@Param('id') id: string): Promise<ClientModel> {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
-        return await this.clientService.getClientByEmail(id);
+        return await this.clientService.getClientByEmail(id.toUpperCase());
       }
-      return await this.clientService.getClientByDni(id);
+      return await this.clientService.getClientByDni(id.toUpperCase());
     } catch (error) {
       throw new NotFoundException('Client not found');
     }
@@ -61,6 +61,8 @@ export class ClientController {
   @ApiOkResponse({ type: ClientDto })
   async signupClient(@Body() userData: ClientDto): Promise<ClientModel> {
     try {
+      userData.dni = userData.dni.toUpperCase();
+      userData.email = userData.email.toUpperCase();
       return await this.clientService.createClient(userData);
     } catch (error) {
       switch (error) {
@@ -85,12 +87,12 @@ export class ClientController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.clientService.updateClientByEmail({
-          email: id,
+          email: id.toUpperCase(),
           data: clientData,
         });
       }
       return await this.clientService.updateClientByDni({
-        dni: id,
+        dni: id.toUpperCase(),
         data: clientData,
       });
     } catch (error) {
@@ -112,9 +114,9 @@ export class ClientController {
   async deleteClientAccount(@Param('id') id: string): Promise<ClientModel> {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
-        return await this.clientService.deleteClientByEmail(id);
+        return await this.clientService.deleteClientByEmail(id.toUpperCase());
       }
-      return await this.clientService.deleteClientByDni(id);
+      return await this.clientService.deleteClientByDni(id.toUpperCase());
     } catch (error) {
       throw new NotFoundException('Client not found');
     }

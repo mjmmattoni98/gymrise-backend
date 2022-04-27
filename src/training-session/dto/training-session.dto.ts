@@ -1,14 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsPositive, Length } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, Length } from 'class-validator';
 
 export class TrainingSessionDto {
   @IsNotEmpty()
+  @IsDate()
   @ApiProperty()
-  date: string;
-
-  @IsNotEmpty()
-  @ApiProperty()
-  time: string;
+  date_time: Date;
 
   @IsNotEmpty()
   @ApiProperty()
@@ -16,7 +13,6 @@ export class TrainingSessionDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @IsPositive()
   @ApiProperty()
   price: number;
 

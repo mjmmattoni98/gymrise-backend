@@ -60,7 +60,7 @@ export class TrainingSessionController {
   ): Promise<TrainingSessionModel[]> {
     try {
       return await this.trainingSessionService.getTrainingSessionsForTrainer(
-        dni,
+        dni.toUpperCase(),
       );
     } catch (error) {
       throw new HttpException(
@@ -81,7 +81,7 @@ export class TrainingSessionController {
   ): Promise<TrainingSessionModel[]> {
     try {
       return await this.trainingSessionService.getTrainingSessionsForClient(
-        dni,
+        dni.toUpperCase(),
       );
     } catch (error) {
       throw new HttpException(
@@ -98,7 +98,10 @@ export class TrainingSessionController {
     @Param('dni_client') dni_client: string,
   ): Promise<TrainingSessionModel[]> {
     try {
-      return await this.trainingSessionService.getTrainingSessionsAvailable();
+      return await this.trainingSessionService.getTrainingSessionsAvailable(
+        dni_trainer.toUpperCase(),
+        dni_client.toUpperCase(),
+      );
     } catch (error) {
       throw new Error('Error while getting all training sessions');
     }
@@ -126,13 +129,12 @@ export class TrainingSessionController {
   ): Promise<TrainingSessionModel> {
     try {
       const prismaSessionObject: Prisma.training_sessionCreateInput = {
-        date: new Date(sessionData.date),
-        time: new Date(sessionData.time),
+        date_time: sessionData.date_time,
         description: sessionData.description,
         price: sessionData.price,
         personal_trainer: {
           connect: {
-            dni: sessionData.dni,
+            dni: sessionData.dni.toUpperCase(),
           },
         },
       };
@@ -157,7 +159,7 @@ export class TrainingSessionController {
     try {
       return await this.trainingSessionService.addClientToSession({
         id: Number(id),
-        dni,
+        dni: dni.toUpperCase(),
       });
     } catch (error) {
       throw new Error('Error while adding client to session');
@@ -197,7 +199,7 @@ export class TrainingSessionController {
     try {
       return await this.trainingSessionService.removeClientFromSession({
         id: Number(id),
-        dni,
+        dni: dni.toUpperCase(),
       });
     } catch (error) {
       throw new Error('Error while removing client from session');

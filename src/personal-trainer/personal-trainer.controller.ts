@@ -41,9 +41,13 @@ export class PersonalTrainerController {
   async getTrainer(@Param('id') id: string): Promise<PersonalTrainerModel> {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
-        return await this.personalTrainerService.getPersonalTrainerByEmail(id);
+        return await this.personalTrainerService.getPersonalTrainerByEmail(
+          id.toUpperCase(),
+        );
       }
-      return await this.personalTrainerService.getPersonalTrainerByDni(id);
+      return await this.personalTrainerService.getPersonalTrainerByDni(
+        id.toUpperCase(),
+      );
     } catch (error) {
       throw new HttpException(
         'Personal trainer not found',
@@ -68,6 +72,8 @@ export class PersonalTrainerController {
     @Body() trainerData: PersonalTrainerDto,
   ): Promise<PersonalTrainerModel> {
     try {
+      trainerData.email = trainerData.email.toUpperCase();
+      trainerData.dni = trainerData.dni.toUpperCase();
       return await this.personalTrainerService.createPersonalTrainer(
         trainerData,
       );
@@ -97,12 +103,12 @@ export class PersonalTrainerController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.personalTrainerService.updatePersonalTrainerByEmail({
-          email: id,
+          email: id.toUpperCase(),
           data: trainerData,
         });
       }
       return await this.personalTrainerService.updatePersonalTrainerByDni({
-        dni: id,
+        dni: id.toUpperCase(),
         data: trainerData,
       });
     } catch (error) {
@@ -130,10 +136,12 @@ export class PersonalTrainerController {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.personalTrainerService.deletePersonalTrainerByEmail(
-          id,
+          id.toUpperCase(),
         );
       }
-      return await this.personalTrainerService.deletePersonalTrainerByDni(id);
+      return await this.personalTrainerService.deletePersonalTrainerByDni(
+        id.toUpperCase(),
+      );
     } catch (error) {
       throw new Error('Error while deleting the personal trainer account');
     }

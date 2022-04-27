@@ -51,10 +51,28 @@ export class TrainingSessionService {
     });
   }
 
-  async getTrainingSessionsAvailable(): Promise<TrainingSessionModel[]> {
-    const sessions = await this.prisma.training_session.findMany();
-    const currentDate = new Date();
-    return sessions.filter((session) => session.date > currentDate);
+  async getTrainingSessionsAvailable(
+    dni_trainer: string,
+    dni_client: string,
+  ): Promise<TrainingSessionModel[]> {
+    const sessions = await this.prisma.training_session.findMany({
+      where: {
+        dni: dni_trainer,
+      },
+    });
+    const clients = await this.prisma.training_session_client.findMany({
+      where: {
+        client: {
+          dni: dni_client,
+        },
+      },
+    });
+    const sessionsAvailable = sessions.filter(
+      (session) =>
+        !clients.some((client) => client.id === session.id) &&
+        session.date_time > new Date(),
+    );
+    return sessionsAvailable;
   }
 
   async createSession(

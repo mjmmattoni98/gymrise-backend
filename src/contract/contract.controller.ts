@@ -47,8 +47,8 @@ export class ContractController {
   ): Promise<ContractModel[]> {
     try {
       return await this.contractService.getContractByDniClientTrainer(
-        dni_trainer,
-        dni_client,
+        dni_trainer.toUpperCase(),
+        dni_client.toUpperCase(),
       );
     } catch (error) {
       throw new Error(
@@ -67,7 +67,7 @@ export class ContractController {
     @Param('dni') dni: string,
   ): Promise<ContractModel[]> {
     try {
-      return await this.contractService.getContractsTrainer(dni);
+      return await this.contractService.getContractsTrainer(dni.toUpperCase());
     } catch (error) {
       throw new Error('Error while getting all contracts');
     }
@@ -83,7 +83,7 @@ export class ContractController {
     @Param('dni') dni: string,
   ): Promise<ContractModel[]> {
     try {
-      return await this.contractService.getContractsClient(dni);
+      return await this.contractService.getContractsClient(dni.toUpperCase());
     } catch (error) {
       throw new Error('Error while getting all contracts');
     }
@@ -115,12 +115,12 @@ export class ContractController {
         accepted: sessionData.accepted,
         client: {
           connect: {
-            dni: sessionData.dni_client,
+            dni: sessionData.dni_client.toUpperCase(),
           },
         },
         personal_trainer: {
           connect: {
-            dni: sessionData.dni_trainer,
+            dni: sessionData.dni_trainer.toUpperCase(),
           },
         },
       };

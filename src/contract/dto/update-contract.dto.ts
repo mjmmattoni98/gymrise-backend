@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-} from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class UpdateContractDto {
   @IsNotEmpty()
@@ -24,7 +18,6 @@ export class UpdateContractDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @IsPositive()
   @ApiProperty()
   price: number;
 

@@ -4,7 +4,6 @@ import {
   IsDate,
   IsNotEmpty,
   IsNumber,
-  IsPositive,
   Length,
 } from 'class-validator';
 
@@ -35,7 +34,6 @@ export class ContractDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @IsPositive()
   @ApiProperty()
   price: number;
 
