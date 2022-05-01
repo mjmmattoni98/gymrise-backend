@@ -16,7 +16,10 @@ import {
   PersonalTrainerCreationError,
 } from './personal-trainer.service';
 import { PersonalTrainerDto } from './dto/personal-trainer.dto';
-import { personal_trainer as PersonalTrainerModel } from '@prisma/client';
+import {
+  personal_trainer as PersonalTrainerModel,
+  skill,
+} from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UpdatePersonalTrainerDto } from './dto/update-personal-trainer.dto';
@@ -39,6 +42,40 @@ export class PersonalTrainerController {
   @ApiOkResponse({ type: PersonalTrainerDto })
   @ApiBearerAuth()
   async getTrainer(@Param('id') id: string): Promise<PersonalTrainerModel> {
+    try {
+      if (EMAIL_REGEXP.test(id.toUpperCase())) {
+        return await this.personalTrainerService.getPersonalTrainerByEmail(
+          id.toLowerCase(),
+        );
+      }
+      return await this.personalTrainerService.getPersonalTrainerByDni(
+        id.toUpperCase(),
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Personal trainer not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  @Get('skills')
+  async getSkills(): Promise<string[]> {
+    try {
+      return await this.personalTrainerService.getSkills();
+    } catch (error) {
+      throw new HttpException(
+        'Personal trainer not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  @Get('skills/:id')
+  @ApiOkResponse({ type: PersonalTrainerDto })
+  async getSkillsTrainer(
+    @Param('id') id: string,
+  ): Promise<PersonalTrainerModel> {
     try {
       if (EMAIL_REGEXP.test(id.toUpperCase())) {
         return await this.personalTrainerService.getPersonalTrainerByEmail(

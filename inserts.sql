@@ -1,16 +1,16 @@
-INSERT INTO personal_trainer VALUES ('admin', 'admin', '11111111A', 'admin', 'admin@gmail.com', 'string');
-INSERT INTO personal_trainer VALUES ('Marcos', 'Magni', '11111111B', 'marcos', 'marcos@gmail.com', 'string');
-INSERT INTO personal_trainer VALUES ('Guinot', 'fiera', '11111111C', 'guinot', 'guinot@gmail.com', 'string');
-INSERT INTO personal_trainer VALUES ('Sergi', 'Velló', '11111111D', 'sergi', 'sergi@gmail.com', 'string');
-INSERT INTO personal_trainer VALUES ('Alex', 'papa', '11111111E', 'alex', 'alex@gmail.com', 'string');
-INSERT INTO personal_trainer VALUES ('Daniel', 'pepe', '11111111F', 'daniel', 'daniel@gmail.com', 'string');
+INSERT INTO client VALUES ('admin', 'admin', '11111111A', '$2b$10$Q0QivpcPDqzZiBQzRSdyeeDEec9ent9W4hiQbynJo1Jut3NhaGmG.', 'admin@gmail.com', 'string', 170, 60, 'Otro', 23);
+INSERT INTO client VALUES ('Marcos', 'Magni', '11111111B', '$2b$10$p0QkEH0elW7YwuF4/pg7aObwedWCX5jQck4dRWf9y5BAVYxUtYXGu', 'marcos@gmail.com', 'string', 170, 60, 'Mujer', 23);
+INSERT INTO client VALUES ('Guinot', 'fiera', '11111111C', '$2b$10$QAPRooaGz165lFr3gTBWQeGplwbfUGCrDOjqo4a3jQNh7k0Lmr5li', 'guinot@gmail.com', 'string', 170, 60, 'Hombre', 23);
+INSERT INTO client VALUES ('Sergi', 'Velló', '11111111D', '$2b$10$V45lOlqVnxMV.sO/avwel.QivKeJIuJOBhxIi1eEh9111UUDW91hS', 'sergi@gmail.com', 'string', 170, 60, 'Hombre', 23);
+INSERT INTO client VALUES ('Alex', 'papa', '11111111E', '$2b$10$oj/wMLhuWKjsSMuVBB1ue.RQvB52i6EiTyXMrslF/0fSKuWUpNCRu', 'alex@gmail.com', 'string', 170, 60, 'Hombre', 23);
+INSERT INTO client VALUES ('Daniel', 'pepe', '11111111F', '$2b$10$G2bKvKS2xB9Q38fI/eHh0evmBaME8yEMreShRyG1UV4yFqWuRA3Ea', 'daniel@gmail.com', 'string', 170, 60, 'Hombre', 23);
 
-INSERT INTO client VALUES ('admin', 'admin', '11111111A', 'admin', 'admin@gmail.com', 'string', 1.70, 60, 'Otro', 23);
-INSERT INTO client VALUES ('Marcos', 'Magni', '11111111B', 'marcos', 'marcos@gmail.com', 'string', 1.70, 60, 'Hombre', 23);
-INSERT INTO client VALUES ('Guinot', 'fiera', '11111111C', 'guinot', 'guinot@gmail.com', 'string', 1.70, 60, 'Hombre', 23);
-INSERT INTO client VALUES ('Sergi', 'Velló', '11111111D', 'sergi', 'sergi@gmail.com', 'string', 1.70, 60, 'Hombre', 23);
-INSERT INTO client VALUES ('Alex', 'papa', '11111111E', 'alex', 'alex@gmail.com', 'string', 1.70, 60, 'Hombre', 23);
-INSERT INTO client VALUES ('Daniel', 'pepe', '11111111F', 'daniel', 'daniel@gmail.com', 'string', 1.70, 60, 'Hombre', 23);
+INSERT INTO personal_trainer VALUES ('admin', 'admin', '11111111A', '$2b$10$Q0QivpcPDqzZiBQzRSdyeeDEec9ent9W4hiQbynJo1Jut3NhaGmG.', 'admin@gmail.com', 'string');
+INSERT INTO personal_trainer VALUES ('Marcos', 'Magni', '11111111B', '$2b$10$p0QkEH0elW7YwuF4/pg7aObwedWCX5jQck4dRWf9y5BAVYxUtYXGu', 'marcos@gmail.com', 'string');
+INSERT INTO personal_trainer VALUES ('Guinot', 'fiera', '11111111C', '$2b$10$QAPRooaGz165lFr3gTBWQeGplwbfUGCrDOjqo4a3jQNh7k0Lmr5li', 'guinot@gmail.com', 'string');
+INSERT INTO personal_trainer VALUES ('Sergi', 'Velló', '11111111D', '$2b$10$V45lOlqVnxMV.sO/avwel.QivKeJIuJOBhxIi1eEh9111UUDW91hS', 'sergi@gmail.com', 'string');
+INSERT INTO personal_trainer VALUES ('Alex', 'papa', '11111111E', '$2b$10$oj/wMLhuWKjsSMuVBB1ue.RQvB52i6EiTyXMrslF/0fSKuWUpNCRu', 'alex@gmail.com', 'string');
+INSERT INTO personal_trainer VALUES ('Daniel', 'pepe', '11111111F', '$2b$10$G2bKvKS2xB9Q38fI/eHh0evmBaME8yEMreShRyG1UV4yFqWuRA3Ea', 'daniel@gmail.com', 'string');
 
 INSERT INTO training_skill VALUES ('11111111A', 'Yoga');
 INSERT INTO training_skill VALUES ('11111111A', 'HIIT');

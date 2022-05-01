@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import {
   personal_trainer as PersonalTrainerModel,
   Prisma,
+  skill,
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -26,6 +27,14 @@ export class PersonalTrainerService {
     email: string,
   ): Promise<PersonalTrainerModel> {
     return this.prisma.personal_trainer.findUnique({ where: { email: email } });
+  }
+
+  async getSkills(): Promise<string[]> {
+    let skills: string[];
+    for (const s in skill) {
+      skills.push(s);
+    }
+    return skills;
   }
 
   async getPersonalTrainers(): Promise<PersonalTrainerModel[]> {
