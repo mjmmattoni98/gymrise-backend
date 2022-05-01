@@ -24,6 +24,7 @@ import { UpdateTrainingSessionDto } from './dto/update-training-session.dto';
 import { RolesGuard } from '../users/roles/roles.guard';
 import { Role } from '../users/roles/role.enum';
 import { Roles } from '../users/roles/roles.decorator';
+import { TrainingSessionInfo } from './entity/training-session-info.entity';
 
 @Controller('training-session')
 @ApiTags('training-session')
@@ -74,11 +75,11 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiOkResponse({ type: [TrainingSessionInfo] })
   @ApiBearerAuth()
   async getTrainingSessionsClient(
     @Param('dni') dni: string,
-  ): Promise<TrainingSessionModel[]> {
+  ): Promise<TrainingSessionInfo[]> {
     try {
       return await this.trainingSessionService.getTrainingSessionsForClient(
         dni.toUpperCase(),
@@ -91,14 +92,38 @@ export class TrainingSessionController {
     }
   }
 
+  @Get('available/client/:dni_client')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [TrainingSessionInfo] })
+  @ApiBearerAuth()
+  async getTrainingSessionsAvailableClient(
+    @Param('dni_client') dni_client: string,
+  ): Promise<TrainingSessionInfo[]> {
+    try {
+      return await this.trainingSessionService.getTrainingSessionsAvailableClient(
+        dni_client.toUpperCase(),
+      );
+    } catch (error) {
+      throw new Error(
+        'Error while getting all training sessions available for client',
+      );
+    }
+  }
+
   @Get('available/:dni_trainer/client/:dni_client')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [TrainingSessionDto] })
-  async getTrainingSessionsAvailable(
+  @ApiBearerAuth()
+  async getTrainingSessionsAvailableTrainerClient(
     @Param('dni_trainer') dni_trainer: string,
     @Param('dni_client') dni_client: string,
   ): Promise<TrainingSessionModel[]> {
     try {
-      return await this.trainingSessionService.getTrainingSessionsAvailable(
+      return await this.trainingSessionService.getTrainingSessionsAvailableTrainerClient(
         dni_trainer.toUpperCase(),
         dni_client.toUpperCase(),
       );
@@ -129,6 +154,7 @@ export class TrainingSessionController {
   ): Promise<TrainingSessionModel> {
     try {
       const prismaSessionObject: Prisma.training_sessionCreateInput = {
+        title: sessionData.title,
         date_time: sessionData.date_time,
         description: sessionData.description,
         price: sessionData.price,

@@ -3,13 +3,16 @@ import { PrismaService } from '../prisma.service';
 import {
   training_session as TrainingSessionModel,
   training_session_client as TrainingSessionClientModel,
+  personal_trainer as PersonalTrainerModel,
   Prisma,
 } from '@prisma/client';
+import { TrainingSessionInfo } from './entity/training-session-info.entity';
 
 export enum TrainingSessionUpdateError {
   TrainingSessionDoesntExist,
 }
 
+const logger = new Logger('TrainingSessionController');
 @Injectable()
 export class TrainingSessionService {
   logger: Logger = new Logger('TrainingSessionService');
@@ -37,8 +40,8 @@ export class TrainingSessionService {
 
   async getTrainingSessionsForClient(
     dni: string,
-  ): Promise<TrainingSessionModel[]> {
-    return this.prisma.training_session.findMany({
+  ): Promise<TrainingSessionInfo[]> {
+    const sessions = await this.prisma.training_session.findMany({
       where: {
         training_session_client: {
           some: {
@@ -49,9 +52,74 @@ export class TrainingSessionService {
         },
       },
     });
+    logger.log(sessions);
+
+    const sessionsInfo: TrainingSessionInfo[] = [];
+    for (const session of sessions) {
+      const personalTrainer: PersonalTrainerModel =
+        await this.prisma.personal_trainer.findUnique({
+          where: {
+            dni: session.dni,
+          },
+        });
+
+      const sessionInfo: TrainingSessionInfo = {
+        title: session.title,
+        date_time: session.date_time,
+        description: session.description,
+        price: session.price,
+        dni: session.dni,
+        name: personalTrainer.name,
+        surname: personalTrainer.surname,
+      };
+      sessionsInfo.push(sessionInfo);
+    }
+
+    return sessionsInfo;
   }
 
-  async getTrainingSessionsAvailable(
+  async getTrainingSessionsAvailableClient(
+    dni: string,
+  ): Promise<TrainingSessionInfo[]> {
+    const sessions = await this.prisma.training_session.findMany();
+    const clients = await this.prisma.training_session_client.findMany({
+      where: {
+        client: {
+          dni: dni,
+        },
+      },
+    });
+
+    const sessionsAvailable = sessions.filter(
+      (session) =>
+        !clients.some((client) => client.id === session.id) &&
+        session.date_time > new Date(),
+    );
+
+    const sessionsInfo: TrainingSessionInfo[] = [];
+    for (const session of sessionsAvailable) {
+      const personalTrainer: PersonalTrainerModel =
+        await this.prisma.personal_trainer.findUnique({
+          where: {
+            dni: session.dni,
+          },
+        });
+      const sessionInfo: TrainingSessionInfo = {
+        title: session.title,
+        date_time: session.date_time,
+        description: session.description,
+        price: session.price,
+        dni: session.dni,
+        name: personalTrainer.name,
+        surname: personalTrainer.surname,
+      };
+      sessionsInfo.push(sessionInfo);
+    }
+
+    return sessionsInfo;
+  }
+
+  async getTrainingSessionsAvailableTrainerClient(
     dni_trainer: string,
     dni_client: string,
   ): Promise<TrainingSessionModel[]> {

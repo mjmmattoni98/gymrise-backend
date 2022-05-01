@@ -3,6 +3,10 @@ import { IsDate, IsNotEmpty, IsNumber, Length } from 'class-validator';
 
 export class UpdateTrainingSessionDto {
   @IsNotEmpty()
+  @ApiProperty()
+  title: string;
+
+  @IsNotEmpty()
   @IsDate()
   @ApiProperty()
   date_time: Date;

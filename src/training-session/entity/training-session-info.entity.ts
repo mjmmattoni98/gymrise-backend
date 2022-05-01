@@ -1,27 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsNumber, Length } from 'class-validator';
 
-export class TrainingSessionDto {
-  @IsNotEmpty()
+export class TrainingSessionInfo {
   @ApiProperty()
   title: string;
 
-  @IsNotEmpty()
-  @IsDate()
   @ApiProperty()
   date_time: Date;
 
-  @IsNotEmpty()
   @ApiProperty()
   description: string;
 
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty()
   price: number;
 
-  @IsNotEmpty()
-  @Length(9)
   @ApiProperty()
   dni: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  surname: string;
 }
