@@ -12,8 +12,8 @@ model chat {
   dni_client       String           @db.VarChar(9)
   date_time        DateTime         @db.Timestamp(6)
   text             String
-  client           client           @relation(fields: [dni_client], references: [dni], map: "chat_fk_client")
-  personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], map: "chat_fk_trainer")
+  client           client           @relation(fields: [dni_client], references: [dni], onDelete: Cascade, map: "chat_fk_client")
+  personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], onDelete: Cascade, map: "chat_fk_trainer")
 
   @@id([dni_trainer, dni_client, date_time], map: "chat_pk")
 }
@@ -43,8 +43,8 @@ model contract {
   end_date         DateTime         @db.Date
   price            Int
   accepted         Boolean          @default(false)
-  client           client           @relation(fields: [dni_client], references: [dni], map: "contract_fk_client")
-  personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], map: "contract_fk_trainer")
+  client           client           @relation(fields: [dni_client], references: [dni], onDelete: Cascade, map: "contract_fk_client")
+  personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], onDelete: Cascade, map: "contract_fk_trainer")
 }
 
 model personal_trainer {
@@ -62,19 +62,20 @@ model personal_trainer {
 
 model training_session {
   id                      Int                       @id(map: "training_session_pk") @default(autoincrement())
+  title                   String                    @db.VarChar(40)
   date_time               DateTime                  @db.Timestamp(6)
   dni                     String                    @db.VarChar(9)
   description             String
   price                   Int
-  personal_trainer        personal_trainer          @relation(fields: [dni], references: [dni], map: "training_session_fk_trainer")
+  personal_trainer        personal_trainer          @relation(fields: [dni], references: [dni], onDelete: Cascade, map: "training_session_fk_trainer")
   training_session_client training_session_client[]
 }
 
 model training_session_client {
   id               Int
   dni              String           @db.VarChar(9)
-  client           client           @relation(fields: [dni], references: [dni], map: "training_session_client_fk_client")
-  training_session training_session @relation(fields: [id], references: [id], map: "training_session_client_fk_session")
+  client           client           @relation(fields: [dni], references: [dni], onDelete: Cascade, map: "training_session_client_fk_client")
+  training_session training_session @relation(fields: [id], references: [id], onDelete: Cascade, map: "training_session_client_fk_session")
 
   @@id([id, dni], map: "training_session_client_pk")
 }
@@ -82,7 +83,7 @@ model training_session_client {
 model training_skill {
   dni              String           @db.VarChar(9)
   skill            skill
-  personal_trainer personal_trainer @relation(fields: [dni], references: [dni], map: "training_skills_fk")
+  personal_trainer personal_trainer @relation(fields: [dni], references: [dni], onDelete: Cascade, map: "training_skills_fk")
 
   @@id([dni, skill], map: "training_skills_pk")
 }
