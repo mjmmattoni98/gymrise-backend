@@ -19,6 +19,7 @@ import { PersonalTrainerDto } from './dto/personal-trainer.dto';
 import {
   personal_trainer as PersonalTrainerModel,
   skill,
+  training_skill as TrainingSkillModel,
 } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -59,35 +60,18 @@ export class PersonalTrainerController {
     }
   }
 
-  @Get('skills')
-  async getSkills(): Promise<string[]> {
+  @Get('skills/:dni')
+  async getSkillsTrainer(@Param('dni') dni: string): Promise<string[]> {
     try {
-      return await this.personalTrainerService.getSkills();
-    } catch (error) {
-      throw new HttpException(
-        'Personal trainer not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-  }
-
-  @Get('skills/:id')
-  @ApiOkResponse({ type: PersonalTrainerDto })
-  async getSkillsTrainer(
-    @Param('id') id: string,
-  ): Promise<PersonalTrainerModel> {
-    try {
-      if (EMAIL_REGEXP.test(id.toUpperCase())) {
-        return await this.personalTrainerService.getPersonalTrainerByEmail(
-          id.toLowerCase(),
-        );
+      if (dni.toUpperCase() === 'ALL') {
+        return this.personalTrainerService.getSkills();
       }
-      return await this.personalTrainerService.getPersonalTrainerByDni(
-        id.toUpperCase(),
+      return await this.personalTrainerService.getSkillsTrainer(
+        dni.toUpperCase(),
       );
     } catch (error) {
       throw new HttpException(
-        'Personal trainer not found',
+        'No skills found for this personal trainer',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -124,6 +108,25 @@ export class PersonalTrainerController {
         default:
           throw error;
       }
+    }
+  }
+
+  @Post('add/:dni/skill/:skill')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async addTrainerSkill(
+    @Param('dni') dni: string,
+    @Param('skill') trainerSkill: skill,
+  ): Promise<TrainingSkillModel> {
+    try {
+      return await this.personalTrainerService.addPersonalTrainerSkill(
+        dni.toUpperCase(),
+        trainerSkill,
+      );
+    } catch (error) {
+      throw new Error('Error while adding skill to trainer');
     }
   }
 
@@ -181,6 +184,25 @@ export class PersonalTrainerController {
       );
     } catch (error) {
       throw new Error('Error while deleting the personal trainer account');
+    }
+  }
+
+  @Delete('delete/:dni/skill/:skill')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async deleteTrainerSkill(
+    @Param('dni') dni: string,
+    @Param('skill') trainerSkill: skill,
+  ): Promise<TrainingSkillModel> {
+    try {
+      return await this.personalTrainerService.deletePersonalTrainerSkill(
+        dni.toUpperCase(),
+        trainerSkill,
+      );
+    } catch (error) {
+      throw new Error('Error while removing skill from trainer');
     }
   }
 }

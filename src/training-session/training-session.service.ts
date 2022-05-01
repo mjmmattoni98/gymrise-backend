@@ -67,12 +67,11 @@ export class TrainingSessionService {
         },
       },
     });
-    const sessionsAvailable = sessions.filter(
+    return sessions.filter(
       (session) =>
         !clients.some((client) => client.id === session.id) &&
         session.date_time > new Date(),
     );
-    return sessionsAvailable;
   }
 
   async createSession(

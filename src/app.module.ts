@@ -16,6 +16,7 @@ import { TrainingSessionModule } from './training-session/training-session.modul
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { SexModule } from './sex/sex.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     TrainingSessionModule,
     TrainingSessionClientModule,
     TrainingSkillModule,
+    SexModule,
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,

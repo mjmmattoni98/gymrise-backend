@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import {
   personal_trainer as PersonalTrainerModel,
+  training_skill as TrainingSkillModel,
   Prisma,
   skill,
 } from '@prisma/client';
@@ -29,12 +30,19 @@ export class PersonalTrainerService {
     return this.prisma.personal_trainer.findUnique({ where: { email: email } });
   }
 
-  async getSkills(): Promise<string[]> {
-    let skills: string[];
+  getSkills(): string[] {
+    const skills: string[] = [];
     for (const s in skill) {
       skills.push(s);
     }
     return skills;
+  }
+
+  async getSkillsTrainer(dni: string): Promise<string[]> {
+    const trainerSkills = await this.prisma.training_skill.findMany({
+      where: { personal_trainer: { dni: dni } },
+    });
+    return trainerSkills.map((trainer) => trainer.skill);
   }
 
   async getPersonalTrainers(): Promise<PersonalTrainerModel[]> {
@@ -57,6 +65,22 @@ export class PersonalTrainerService {
     data.password = hashedPassword;
 
     return this.prisma.personal_trainer.create({ data });
+  }
+
+  async addPersonalTrainerSkill(
+    dni: string,
+    trainerSkill: skill,
+  ): Promise<TrainingSkillModel> {
+    return this.prisma.training_skill.create({
+      data: {
+        personal_trainer: {
+          connect: {
+            dni: dni,
+          },
+        },
+        skill: trainerSkill,
+      },
+    });
   }
 
   async updatePersonalTrainerByDni(params: {
@@ -103,5 +127,19 @@ export class PersonalTrainerService {
     email: string,
   ): Promise<PersonalTrainerModel> {
     return this.prisma.personal_trainer.delete({ where: { email: email } });
+  }
+
+  async deletePersonalTrainerSkill(
+    dni: string,
+    trainerSkill: skill,
+  ): Promise<TrainingSkillModel> {
+    return this.prisma.training_skill.delete({
+      where: {
+        dni_skill: {
+          dni: dni,
+          skill: trainerSkill,
+        },
+      },
+    });
   }
 }
