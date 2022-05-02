@@ -79,4 +79,11 @@ CREATE TABLE training_session_client (
     CONSTRAINT training_session_client_fk_session FOREIGN KEY (id) REFERENCES training_session (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
+CREATE TABLE notifications (
+    id SERIAL,
+    dni VARCHAR(9) NOT NULL,
+    date_time TIMESTAMP NOT NULL,
+    text TEXT NOT NULL,
+    CONSTRAINT notifications_pk PRIMARY KEY (id),
+    CONSTRAINT notifications_fk_client FOREIGN KEY (dni) REFERENCES client (dni) ON DELETE CASCADE ON UPDATE CASCADE
+);

@@ -31,6 +31,7 @@ model client {
   age                     Int
   chat                    chat[]
   contract                contract[]
+  notifications           notifications[]
   training_session_client training_session_client[]
 }
 
@@ -86,6 +87,14 @@ model training_skill {
   personal_trainer personal_trainer @relation(fields: [dni], references: [dni], onDelete: Cascade, map: "training_skills_fk")
 
   @@id([dni, skill], map: "training_skills_pk")
+}
+
+model notifications {
+  id        Int      @id(map: "notifications_pk") @default(autoincrement())
+  dni       String   @db.VarChar(9)
+  date_time DateTime @db.Timestamp(6)
+  text      String
+  client    client   @relation(fields: [dni], references: [dni], onDelete: Cascade, map: "notifications_fk_client")
 }
 
 enum sex {
