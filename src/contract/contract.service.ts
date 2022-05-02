@@ -41,6 +41,18 @@ export class ContractService {
     return this.prisma.contract.create({ data });
   }
 
+  async updateContractClient(
+    id: number,
+    accepted: boolean,
+  ): Promise<ContractModel> {
+    return this.prisma.contract.update({
+      where: { id: id },
+      data: {
+        accepted: accepted,
+      },
+    });
+  }
+
   async updateContract(params: {
     id: number;
     data: Prisma.contractUpdateInput;

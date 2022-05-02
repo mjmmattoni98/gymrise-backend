@@ -1,7 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, Length } from 'class-validator';
 
-export class UpdateContractDto {
+export class CreateContractDto {
+  @IsNotEmpty()
+  @Length(9)
+  @ApiProperty()
+  dni_trainer: string;
+
+  @IsNotEmpty()
+  @Length(9)
+  @ApiProperty()
+  dni_client: string;
+
   @IsNotEmpty()
   @ApiProperty()
   description: string;

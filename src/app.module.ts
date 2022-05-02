@@ -17,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { SexModule } from './sex/sex.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SexModule } from './sex/sex.module';
       isGlobal: true,
     }),
     UsersModule,
+    NotificationsModule,
   ],
   controllers: [
     AppController,

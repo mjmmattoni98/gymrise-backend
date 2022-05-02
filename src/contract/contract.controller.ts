@@ -19,11 +19,18 @@ import { UpdateContractDto } from './dto/update-contract.dto';
 import { Roles } from '../users/roles/roles.decorator';
 import { Role } from '../users/roles/role.enum';
 import { RolesGuard } from '../users/roles/roles.guard';
+import { NotificationsService } from '../notifications/notifications.service';
+import { PersonalTrainerService } from '../personal-trainer/personal-trainer.service';
+import { CreateContractDto } from './dto/create-contract.dto';
 
 @Controller('contract')
 @ApiTags('contract')
 export class ContractController {
-  constructor(private readonly contractService: ContractService) {}
+  constructor(
+    private readonly contractService: ContractService,
+    private readonly personalTrainerService: PersonalTrainerService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
@@ -102,17 +109,20 @@ export class ContractController {
   }
 
   @Post('add')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
-  async addContract(@Body() sessionData: ContractDto): Promise<ContractModel> {
+  async addContract(
+    @Body() sessionData: CreateContractDto,
+  ): Promise<ContractModel> {
     try {
       const prismaSessionObject: Prisma.contractCreateInput = {
         description: sessionData.description,
         price: sessionData.price,
         start_date: sessionData.start_date,
         end_date: sessionData.end_date,
-        accepted: sessionData.accepted,
         client: {
           connect: {
             dni: sessionData.dni_client.toUpperCase(),
@@ -125,13 +135,44 @@ export class ContractController {
         },
       };
 
+      const personalTrainer =
+        await this.personalTrainerService.getPersonalTrainerByDni(
+          sessionData.dni_trainer.toUpperCase(),
+        );
+      await this.notificationsService.createNotificationClient(
+        sessionData.dni_client.toUpperCase(),
+        `New contract created with {${personalTrainer.name} ${personalTrainer.surname}}`,
+      );
+
       return await this.contractService.createContract(prismaSessionObject);
     } catch (error) {
       throw new Error('Error while creating the contract');
     }
   }
 
+  @Put('update/:id/:accepted')
+  @UseGuards(RolesGuard)
+  @Roles(Role.CLIENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: ContractDto })
+  @ApiBearerAuth()
+  async updateContractClient(
+    @Param('id') id: string,
+    @Param('accepted') accepted: string,
+  ): Promise<ContractModel> {
+    try {
+      return await this.contractService.updateContractClient(
+        Number(id),
+        accepted === 'true',
+      );
+    } catch (error) {
+      throw new Error('Error while accepting the contract');
+    }
+  }
+
   @Put('update/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
@@ -150,6 +191,8 @@ export class ContractController {
   }
 
   @Delete('delete/:id')
+  @UseGuards(RolesGuard)
+  @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: ContractDto })
   @ApiBearerAuth()
