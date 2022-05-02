@@ -31,19 +31,18 @@ export class NotificationsService {
     });
   }
 
-  async deleteNotificationClient(id: number, dni: string) {
-    return this.prisma.notifications.deleteMany({
-      where: {
-        dni,
-        id,
-      },
-    });
-  }
-
   async deleteAllNotificationsClient(dni: string) {
     return this.prisma.notifications.deleteMany({
       where: {
         dni,
+      },
+    });
+  }
+
+  async deleteNotification(id: number) {
+    return this.prisma.notifications.delete({
+      where: {
+        id,
       },
     });
   }

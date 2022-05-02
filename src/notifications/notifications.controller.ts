@@ -31,37 +31,21 @@ export class NotificationsController {
     }
   }
 
-  @Delete('delete/:dni')
+  @Delete('delete/:id')
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async deleteAllNotificationsClient(@Param('dni') dni: string) {
+  async deleteAllNotificationsClient(@Param('id') id: string) {
     try {
-      return await this.notificationsService.deleteAllNotificationsClient(
-        dni.toUpperCase(),
-      );
+      if (id.length === 9) {
+        return await this.notificationsService.deleteAllNotificationsClient(
+          id.toUpperCase(),
+        );
+      }
+      return await this.notificationsService.deleteNotification(Number(id));
     } catch (error) {
       throw new Error('Error while deleting all the notifications of a client');
-    }
-  }
-
-  @Delete('delete/:id/client/:dni')
-  @UseGuards(RolesGuard)
-  @Roles(Role.CLIENT)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  async deleteNotificationClient(
-    @Param('id') id: string,
-    @Param('dni') dni: string,
-  ) {
-    try {
-      return await this.notificationsService.deleteNotificationClient(
-        Number(id),
-        dni.toUpperCase(),
-      );
-    } catch (error) {
-      throw new Error('Error while deleting the notification of a client');
     }
   }
 }
