@@ -1,11 +1,13 @@
 {
     "cSpell.words": [
+        "DEPORTISTA",
         "Doesnt",
         "ENTRENADOR",
         "gymrise",
         "nestjs",
         "prebuild",
-        "prestart"
+        "prestart",
+        "websockets"
     ],
     "cSpell.customDictionaries": {
         "custom-dictionary-workspace": {

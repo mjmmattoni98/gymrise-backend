@@ -18,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { SexModule } from './sex/sex.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -42,6 +43,11 @@ import { NotificationsModule } from './notifications/notifications.module';
     ContractController,
     TrainingSessionClientController,
   ],
-  providers: [AppService, ChatService, TrainingSessionClientService],
+  providers: [
+    AppService,
+    ChatService,
+    TrainingSessionClientService,
+    ChatGateway,
+  ],
 })
 export class AppModule {}
