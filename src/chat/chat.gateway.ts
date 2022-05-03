@@ -33,6 +33,6 @@ export class ChatGateway {
       data.dni_client,
       data.dni_trainer,
     );
-    this.server.sockets.emit('chat_client', messages);
+    this.server.sockets.emit('chat-client', messages);
   }
 }
