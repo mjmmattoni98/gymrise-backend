@@ -19,6 +19,7 @@ import { UsersModule } from './users/users.module';
 import { SexModule } from './sex/sex.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGateway } from './chat/chat.gateway';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ChatGateway } from './chat/chat.gateway';
     AppService,
     ChatService,
     TrainingSessionClientService,
+    PrismaService,
     ChatGateway,
   ],
 })
