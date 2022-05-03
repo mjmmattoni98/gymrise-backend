@@ -19,8 +19,12 @@ export class ChatGateway {
 
   @SubscribeMessage('chat-server')
   async listenForMessages(@MessageBody() data: ChatDto): Promise<void> {
-    this.chatService.saveMessage(data.dni_client, data.dni_trainer, data.text);
-    this.server.sockets.emit('chat_client', data);
+    const message = await this.chatService.saveMessage(
+      data.dni_client,
+      data.dni_trainer,
+      data.text,
+    );
+    this.server.sockets.emit('chat_client', message);
   }
 
   @SubscribeMessage('request-all-messages')
