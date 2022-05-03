@@ -17,7 +17,7 @@ export class ChatGateway {
 
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('chat_server')
+  @SubscribeMessage('chat-server')
   async listenForMessages(@MessageBody() data: ChatDto): Promise<void> {
     this.chatService.saveMessage(data.dni_client, data.dni_trainer, data.text);
     this.server.sockets.emit('chat_client', data);
