@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class TrainingSessionInfo {
+export class TrainingSession {
   @ApiProperty()
   id: number;
 
@@ -18,10 +18,4 @@ export class TrainingSessionInfo {
 
   @ApiProperty()
   dni: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  surname: string;
 }

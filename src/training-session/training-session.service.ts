@@ -64,6 +64,7 @@ export class TrainingSessionService {
         });
 
       const sessionInfo: TrainingSessionInfo = {
+        id: session.id,
         title: session.title,
         date_time: session.date_time,
         description: session.description,
@@ -105,6 +106,7 @@ export class TrainingSessionService {
           },
         });
       const sessionInfo: TrainingSessionInfo = {
+        id: session.id,
         title: session.title,
         date_time: session.date_time,
         description: session.description,
@@ -171,6 +173,17 @@ export class TrainingSessionService {
     });
   }
 
+  async updateTrainingSession(params: {
+    id: number;
+    data: Prisma.training_sessionUpdateInput;
+  }): Promise<TrainingSessionModel> {
+    const { data, id } = params;
+    return this.prisma.training_session.update({
+      where: { id: id },
+      data: data,
+    });
+  }
+
   async removeClientFromSession(params: {
     id: number;
     dni: string;
@@ -183,17 +196,6 @@ export class TrainingSessionService {
           dni: dni,
         },
       },
-    });
-  }
-
-  async updateTrainingSession(params: {
-    id: number;
-    data: Prisma.training_sessionUpdateInput;
-  }): Promise<TrainingSessionModel> {
-    const { data, id } = params;
-    return this.prisma.training_session.update({
-      where: { id: id },
-      data: data,
     });
   }
 

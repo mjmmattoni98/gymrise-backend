@@ -25,6 +25,7 @@ import { RolesGuard } from '../users/roles/roles.guard';
 import { Role } from '../users/roles/role.enum';
 import { Roles } from '../users/roles/roles.decorator';
 import { TrainingSessionInfo } from './entity/training-session-info.entity';
+import { TrainingSession } from './entity/training-session.entity';
 
 @Controller('training-session')
 @ApiTags('training-session')
@@ -37,7 +38,7 @@ export class TrainingSessionController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: TrainingSessionDto })
+  @ApiOkResponse({ type: TrainingSession })
   @ApiBearerAuth()
   async getTrainingSession(
     @Param('id') id: string,
@@ -55,7 +56,7 @@ export class TrainingSessionController {
   }
 
   @Get('trainer/:dni')
-  @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiOkResponse({ type: [TrainingSession] })
   async getTrainingSessionsTrainer(
     @Param('dni') dni: string,
   ): Promise<TrainingSessionModel[]> {
@@ -116,7 +117,7 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiOkResponse({ type: [TrainingSession] })
   @ApiBearerAuth()
   async getTrainingSessionsAvailableTrainerClient(
     @Param('dni_trainer') dni_trainer: string,
@@ -133,7 +134,7 @@ export class TrainingSessionController {
   }
 
   @Get()
-  @ApiOkResponse({ type: [TrainingSessionDto] })
+  @ApiOkResponse({ type: [TrainingSession] })
   async getAllTrainingSessions(): Promise<TrainingSessionModel[]> {
     try {
       this.logger.log('Controller: Getting all training sessions');
@@ -147,7 +148,7 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: TrainingSessionDto })
+  @ApiOkResponse({ type: TrainingSession })
   @ApiBearerAuth()
   async addTrainingSession(
     @Body() sessionData: TrainingSessionDto,
@@ -176,7 +177,6 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
   async addClientToSession(
     @Param('id') id: string,
@@ -196,7 +196,7 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: TrainingSessionDto })
+  @ApiOkResponse({ type: TrainingSession })
   @ApiBearerAuth()
   async updateTrainingSession(
     @Param('id') id: string,
@@ -216,7 +216,6 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: TrainingSessionDto })
   @ApiBearerAuth()
   async removeClientFromSession(
     @Param('id') id: string,
@@ -236,7 +235,7 @@ export class TrainingSessionController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: TrainingSessionDto })
+  @ApiOkResponse({ type: TrainingSession })
   @ApiBearerAuth()
   async deleteTrainingSession(
     @Param('id') id: string,
