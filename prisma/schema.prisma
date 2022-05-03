@@ -37,6 +37,7 @@ model client {
 
 model contract {
   id               Int              @id(map: "contract_pk") @default(autoincrement())
+  title            String           @db.VarChar(40)
   dni_trainer      String           @db.VarChar(9)
   dni_client       String           @db.VarChar(9)
   description      String

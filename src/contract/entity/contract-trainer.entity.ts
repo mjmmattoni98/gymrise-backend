@@ -1,37 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNotEmpty, IsNumber, Length } from 'class-validator';
 
-export class CreateContractDto {
-  @IsNotEmpty()
+export class ContractTrainer {
+  @ApiProperty()
+  id: number;
+
   @ApiProperty()
   title: string;
 
-  @IsNotEmpty()
-  @Length(9)
   @ApiProperty()
   dni_trainer: string;
 
-  @IsNotEmpty()
-  @Length(9)
   @ApiProperty()
   dni_client: string;
 
-  @IsNotEmpty()
   @ApiProperty()
   description: string;
 
-  @IsNotEmpty()
-  @IsDate()
   @ApiProperty()
   start_date: Date;
 
-  @IsNotEmpty()
-  @IsDate()
   @ApiProperty()
   end_date: Date;
 
-  @IsNotEmpty()
-  @IsNumber()
   @ApiProperty()
   price: number;
+
+  @ApiProperty()
+  accepted: boolean;
+
+  @ApiProperty()
+  name_client: string;
+
+  @ApiProperty()
+  surname_client: string;
 }

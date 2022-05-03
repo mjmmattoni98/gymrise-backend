@@ -22,6 +22,9 @@ import { RolesGuard } from '../users/roles/roles.guard';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PersonalTrainerService } from '../personal-trainer/personal-trainer.service';
 import { CreateContractDto } from './dto/create-contract.dto';
+import { Contract } from './entity/contract.entity';
+import { ContractTrainer } from './entity/contract-trainer.entity';
+import { ContractClient } from './entity/contract-client.entity';
 
 @Controller('contract')
 @ApiTags('contract')
@@ -34,7 +37,7 @@ export class ContractController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: ContractDto })
+  @ApiOkResponse({ type: Contract })
   @ApiBearerAuth()
   async getContract(@Param('id') id: string): Promise<ContractModel> {
     try {
@@ -46,7 +49,7 @@ export class ContractController {
 
   @Get('trainer/:dni_trainer/client/:dni_client')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [ContractDto] })
+  @ApiOkResponse({ type: [Contract] })
   @ApiBearerAuth()
   async getContractsByDniTrainerClient(
     @Param('dni_trainer') dni_trainer: string,
@@ -68,7 +71,7 @@ export class ContractController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [ContractDto] })
+  @ApiOkResponse({ type: [ContractTrainer] })
   @ApiBearerAuth()
   async getContractsTrainer(
     @Param('dni') dni: string,
@@ -84,7 +87,7 @@ export class ContractController {
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [ContractDto] })
+  @ApiOkResponse({ type: [ContractClient] })
   @ApiBearerAuth()
   async getContractsClient(
     @Param('dni') dni: string,
@@ -98,7 +101,7 @@ export class ContractController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [ContractDto] })
+  @ApiOkResponse({ type: [Contract] })
   @ApiBearerAuth()
   async getContracts(): Promise<ContractModel[]> {
     try {
@@ -112,13 +115,14 @@ export class ContractController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: ContractDto })
+  @ApiOkResponse({ type: Contract })
   @ApiBearerAuth()
   async addContract(
     @Body() sessionData: CreateContractDto,
   ): Promise<ContractModel> {
     try {
       const prismaSessionObject: Prisma.contractCreateInput = {
+        title: sessionData.title,
         description: sessionData.description,
         price: sessionData.price,
         start_date: sessionData.start_date,
@@ -141,7 +145,7 @@ export class ContractController {
         );
       await this.notificationsService.createNotificationClient(
         sessionData.dni_client.toUpperCase(),
-        `New contract created with {${personalTrainer.name} ${personalTrainer.surname}}`,
+        `Nuevo contrato creado con {${personalTrainer.name} ${personalTrainer.surname}}`,
       );
 
       return await this.contractService.createContract(prismaSessionObject);
@@ -154,7 +158,7 @@ export class ContractController {
   @UseGuards(RolesGuard)
   @Roles(Role.CLIENT)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: ContractDto })
+  @ApiOkResponse({ type: Contract })
   @ApiBearerAuth()
   async updateContractClient(
     @Param('id') id: string,
@@ -174,7 +178,7 @@ export class ContractController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: ContractDto })
+  @ApiOkResponse({ type: Contract })
   @ApiBearerAuth()
   async updateContract(
     @Param('id') id: string,
@@ -194,7 +198,7 @@ export class ContractController {
   @UseGuards(RolesGuard)
   @Roles(Role.PERSONAL_TRAINER)
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: ContractDto })
+  @ApiOkResponse({ type: Contract })
   @ApiBearerAuth()
   async deleteContract(@Param('id') id: string): Promise<ContractModel> {
     try {

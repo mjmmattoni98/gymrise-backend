@@ -35,9 +35,9 @@ INSERT INTO chat VALUES ('11111111A', '11111111B', '2022-05-08 18:05:00', 'strin
 INSERT INTO chat VALUES ('11111111A', '11111111B', '2022-05-08 18:10:00', 'string');
 INSERT INTO chat VALUES ('11111111A', '11111111B', '2022-05-08 18:20:00', 'string');
 
-INSERT INTO contract (dni_trainer, dni_client, description, start_date, end_date, price) VALUES ('11111111A', '11111111B', 'string', '2022-05-08 18:00:00', '2022-06-08 18:00:00', 10);
-INSERT INTO contract (dni_trainer, dni_client, description, start_date, end_date, price) VALUES ('11111111A', '11111111C', 'string', '2022-05-08 18:00:00', '2022-06-08 18:00:00', 0);
-INSERT INTO contract (dni_trainer, dni_client, description, start_date, end_date, price) VALUES ('11111111B', '11111111C', 'string', '2022-05-08 18:00:00', '2022-06-08 18:00:00', 10);
+INSERT INTO contract (title, dni_trainer, dni_client, description, start_date, end_date, price) VALUES ('Reto 30 días de cardio', '11111111A', '11111111B', 'string', '2022-05-08 18:00:00', '2022-06-08 18:00:00', 10);
+INSERT INTO contract (title, dni_trainer, dni_client, description, start_date, end_date, price) VALUES ('Aumentar 10 kilos de musculo', '11111111A', '11111111C', 'string', '2022-05-08 18:00:00', '2022-06-08 18:00:00', 0);
+INSERT INTO contract (title, dni_trainer, dni_client, description, start_date, end_date, price) VALUES ('Mantenimiento', '11111111B', '11111111C', 'string', '2022-05-08 18:00:00', '2022-06-08 18:00:00', 10);
 
 INSERT INTO training_session (title, date_time, dni, description, price) VALUES ('Clase de aerobic', '2022-05-08 18:20:00', '11111111A', 'string', 0);
 INSERT INTO training_session (title, date_time, dni, description, price) VALUES ('Clase de fuerza', '2022-05-18 18:20:00', '11111111A', 'string', 10);
@@ -50,3 +50,6 @@ INSERT INTO training_session_client VALUES (3, '11111111A');
 INSERT INTO training_session_client VALUES (3, '11111111C');
 INSERT INTO training_session_client VALUES (2, '11111111B');
 
+INSERT INTO notifications (dni, date_time, text) VALUES ('11111111B', now(), 'Nuevo contrato creado con admin admin');
+INSERT INTO notifications (dni, date_time, text) VALUES ('11111111C', now(), 'Nuevo contrato creado con admin admin');
+INSERT INTO notifications (dni, date_time, text) VALUES ('11111111C', now(), 'Nuevo contrato creado con Marcos Magni');

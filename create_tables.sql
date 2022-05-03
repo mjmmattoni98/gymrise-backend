@@ -46,6 +46,7 @@ CREATE TABLE chat (
 
 CREATE TABLE contract (
     id SERIAL,
+    title VARCHAR(40) NOT NULL, 
     dni_trainer VARCHAR(9) NOT NULL,
     dni_client VARCHAR(9) NOT NULL,
     description TEXT NOT NULL,

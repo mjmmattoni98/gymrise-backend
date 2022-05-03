@@ -52,7 +52,6 @@ export class TrainingSessionService {
         },
       },
     });
-    logger.log(sessions);
 
     const sessionsInfo: TrainingSessionInfo[] = [];
     for (const session of sessions) {

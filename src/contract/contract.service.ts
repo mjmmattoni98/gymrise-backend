@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { contract as ContractModel, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { ContractClient } from './entity/contract-client.entity';
+import { ContractTrainer } from './entity/contract-trainer.entity';
 
 @Injectable()
 export class ContractService {
@@ -10,16 +12,50 @@ export class ContractService {
     return this.prisma.contract.findUnique({ where: { id: id } });
   }
 
-  async getContractsTrainer(dni: string): Promise<ContractModel[]> {
-    return this.prisma.contract.findMany({
+  async getContractsTrainer(dni: string): Promise<ContractTrainer[]> {
+    const contracts = await this.prisma.contract.findMany({
       where: { dni_trainer: dni },
     });
+
+    const contractsTrainer: ContractTrainer[] = [];
+    for (const contract of contracts) {
+      const client = await this.prisma.client.findUnique({
+        where: { dni: contract.dni_client },
+      });
+
+      const contractTrainer: ContractTrainer = {
+        ...contract,
+        name_client: client.name,
+        surname_client: client.surname,
+      };
+
+      contractsTrainer.push(contractTrainer);
+    }
+
+    return contractsTrainer;
   }
 
-  async getContractsClient(dni: string): Promise<ContractModel[]> {
-    return this.prisma.contract.findMany({
+  async getContractsClient(dni: string): Promise<ContractClient[]> {
+    const contracts = await this.prisma.contract.findMany({
       where: { dni_client: dni },
     });
+
+    const contractsClient: ContractClient[] = [];
+    for (const contract of contracts) {
+      const client = await this.prisma.client.findUnique({
+        where: { dni: contract.dni_client },
+      });
+
+      const contractClient: ContractClient = {
+        ...contract,
+        name_trainer: client.name,
+        surname_trainer: client.surname,
+      };
+
+      contractsClient.push(contractClient);
+    }
+
+    return contractsClient;
   }
 
   async getContractByDniClientTrainer(

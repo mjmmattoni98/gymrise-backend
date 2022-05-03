@@ -4,6 +4,10 @@ import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
 export class UpdateContractDto {
   @IsNotEmpty()
   @ApiProperty()
+  title: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
   description: string;
 
   @IsNotEmpty()

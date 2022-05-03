@@ -9,6 +9,10 @@ import {
 
 export class ContractDto {
   @IsNotEmpty()
+  @ApiProperty()
+  title: string;
+
+  @IsNotEmpty()
   @Length(9)
   @ApiProperty()
   dni_trainer: string;
