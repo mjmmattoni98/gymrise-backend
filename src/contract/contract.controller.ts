@@ -74,7 +74,7 @@ export class ContractController {
   @ApiBearerAuth()
   async getContractsTrainer(
     @Param('dni') dni: string,
-  ): Promise<ContractModel[]> {
+  ): Promise<ContractTrainer[]> {
     try {
       return await this.contractService.getContractsTrainer(dni.toUpperCase());
     } catch (error) {
@@ -90,7 +90,7 @@ export class ContractController {
   @ApiBearerAuth()
   async getContractsClient(
     @Param('dni') dni: string,
-  ): Promise<ContractModel[]> {
+  ): Promise<ContractClient[]> {
     try {
       return await this.contractService.getContractsClient(dni.toUpperCase());
     } catch (error) {

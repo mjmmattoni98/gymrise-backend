@@ -42,14 +42,14 @@ export class ContractService {
 
     const contractsClient: ContractClient[] = [];
     for (const contract of contracts) {
-      const client = await this.prisma.client.findUnique({
-        where: { dni: contract.dni_client },
+      const trainer = await this.prisma.personal_trainer.findUnique({
+        where: { dni: contract.dni_trainer },
       });
 
       const contractClient: ContractClient = {
         ...contract,
-        name_trainer: client.name,
-        surname_trainer: client.surname,
+        name_trainer: trainer.name,
+        surname_trainer: trainer.surname,
       };
 
       contractsClient.push(contractClient);
