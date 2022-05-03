@@ -10,7 +10,6 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ContractDto } from './dto/contract.dto';
 import { contract as ContractModel, Prisma } from '@prisma/client';
 import { ContractService } from './contract.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
