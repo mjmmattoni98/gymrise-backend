@@ -53,7 +53,7 @@ CREATE TABLE contract (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     price INTEGER NOT NULL,
-    accepted BOOLEAN NOT NULL DEFAULT FALSE,
+    accepted BOOLEAN,
     CONSTRAINT contract_pk PRIMARY KEY (id),
     CONSTRAINT contract_fk_trainer FOREIGN KEY (dni_trainer) REFERENCES personal_trainer (dni) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT contract_fk_client FOREIGN KEY (dni_client) REFERENCES client (dni) ON DELETE CASCADE ON UPDATE CASCADE,

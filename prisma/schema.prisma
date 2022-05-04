@@ -44,7 +44,7 @@ model contract {
   start_date       DateTime         @db.Date
   end_date         DateTime         @db.Date
   price            Int
-  accepted         Boolean          @default(false)
+  accepted         Boolean?
   client           client           @relation(fields: [dni_client], references: [dni], onDelete: Cascade, map: "contract_fk_client")
   personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], onDelete: Cascade, map: "contract_fk_trainer")
 }
