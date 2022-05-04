@@ -28,7 +28,7 @@ export class ChatGateway {
       data.dni_trainer,
       data.text,
     );
-    this.server.sockets.emit('chat_client', message);
+    this.server.sockets.emit('chat-client', message);
   }
 
   @SubscribeMessage('request-all-messages')
