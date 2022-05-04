@@ -10,7 +10,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { ChatDto } from './dto/chat.dto';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
