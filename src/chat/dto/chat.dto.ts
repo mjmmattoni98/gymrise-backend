@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, Length } from 'class-validator';
+import { IsDate, IsNotEmpty, Length } from 'class-validator';
 
 export class ChatDto {
   @IsNotEmpty()
@@ -11,6 +11,11 @@ export class ChatDto {
   @Length(9)
   @ApiProperty()
   dni_trainer: string;
+
+  @IsNotEmpty()
+  @IsDate()
+  @ApiProperty()
+  date_time: Date;
 
   @IsNotEmpty()
   @ApiProperty()

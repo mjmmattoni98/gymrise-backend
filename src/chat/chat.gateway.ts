@@ -26,6 +26,7 @@ export class ChatGateway {
     const message = await this.chatService.saveMessage(
       data.dni_client,
       data.dni_trainer,
+      data.date_time,
       data.text,
     );
     this.server.sockets.emit('chat-client', message);
