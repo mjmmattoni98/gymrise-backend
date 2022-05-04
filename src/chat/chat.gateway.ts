@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -18,11 +18,15 @@ import { ChatDto } from './dto/chat.dto';
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
+  logger = new Logger('ChatGateway');
 
   constructor(private readonly chatService: ChatService) {}
 
   @SubscribeMessage('chat-server')
   async listenForMessages(@MessageBody() data: ChatDto): Promise<void> {
+    this.logger.log(
+      `New message between ${data.dni_client} and ${data.dni_trainer} with data:\n${data.text}`,
+    );
     const message = await this.chatService.saveMessage(
       data.dni_client,
       data.dni_trainer,
@@ -30,6 +34,7 @@ export class ChatGateway {
       data.text,
     );
     this.server.sockets.emit('chat-client', message);
+    this.logger.log(`Message sent with data:\n${JSON.stringify(message)}`);
   }
 
   @SubscribeMessage('request-all-messages')

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { chat as ChatModel } from '@prisma/client';
 import { ChatInfo } from './entity/chat-info.entity';
+import { Chat } from './entity/chat.entity';
 
 @Injectable()
 export class ChatService {
@@ -12,8 +13,8 @@ export class ChatService {
     dni_trainer: string,
     date_time: Date,
     text: string,
-  ): Promise<ChatModel> {
-    return this.prisma.chat.create({
+  ): Promise<Chat> {
+    const message = await this.prisma.chat.create({
       data: {
         date_time: date_time,
         text: text,
@@ -28,7 +29,23 @@ export class ChatService {
           },
         },
       },
+      include: {
+        client: true,
+        personal_trainer: true,
+      },
     });
+
+    const messageInfo: Chat = new Chat();
+    messageInfo.dni_client = message.client.dni;
+    messageInfo.dni_trainer = message.personal_trainer.dni;
+    messageInfo.date_time = message.date_time;
+    messageInfo.text = message.text;
+    messageInfo.name_client = message.client.name;
+    messageInfo.surname_client = message.client.surname;
+    messageInfo.name_trainer = message.personal_trainer.name;
+    messageInfo.surname_trainer = message.personal_trainer.surname;
+
+    return messageInfo;
   }
 
   async getMessages(
