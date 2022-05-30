@@ -48,16 +48,33 @@ export class ChatService {
     return messageInfo;
   }
 
-  async getMessages(
-    dni_client: string,
-    dni_trainer: string,
-  ): Promise<ChatModel[]> {
-    return this.prisma.chat.findMany({
+  async getMessages(dni_client: string, dni_trainer: string): Promise<Chat[]> {
+    const chats = await this.prisma.chat.findMany({
       where: {
         dni_client,
         dni_trainer,
       },
+      include: {
+        client: true,
+        personal_trainer: true,
+      },
     });
+
+    const chatsInfo: Chat[] = [];
+    for (const chat of chats) {
+      const chatInfo = new Chat();
+      chatInfo.dni_client = chat.dni_client;
+      chatInfo.name_client = chat.client.name;
+      chatInfo.surname_client = chat.client.surname;
+      chatInfo.dni_trainer = chat.dni_trainer;
+      chatInfo.name_trainer = chat.personal_trainer.name;
+      chatInfo.surname_trainer = chat.personal_trainer.surname;
+      chatInfo.date_time = chat.date_time;
+      chatInfo.text = chat.text;
+      chatsInfo.push(chatInfo);
+    }
+
+    return chatsInfo;
   }
 
   async getChatsClient(dni_client: string): Promise<ChatInfo[]> {

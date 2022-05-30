@@ -12,6 +12,7 @@ import { Roles } from '../users/roles/roles.decorator';
 import { RolesGuard } from '../users/roles/roles.guard';
 import { ChatService } from './chat.service';
 import { ChatInfo } from './entity/chat-info.entity';
+import { Chat } from './entity/chat.entity';
 
 @Controller('chat')
 export class ChatController {
@@ -42,6 +43,26 @@ export class ChatController {
       return await this.chatService.getChatsClient(dni.toUpperCase());
     } catch (error) {
       throw new NotFoundException(`No chats found for client ${dni}`);
+    }
+  }
+
+  @Get('client/:dni_client/trainer/:dni_trainer')
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: [Chat] })
+  @ApiBearerAuth()
+  async getChats(
+    @Param('dni_client') dni_client: string,
+    @Param('dni_trainer') dni_trainer: string,
+  ): Promise<Chat[]> {
+    try {
+      return await this.chatService.getMessages(
+        dni_client.toUpperCase(),
+        dni_trainer.toUpperCase(),
+      );
+    } catch (error) {
+      throw new NotFoundException(
+        `No chats found between ${dni_client} and ${dni_trainer}`,
+      );
     }
   }
 }

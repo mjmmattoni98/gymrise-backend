@@ -1,4 +1,4 @@
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -6,7 +6,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { ChatDto } from './dto/chat.dto';
 
@@ -33,7 +32,7 @@ export class ChatGateway {
       data.date_time,
       data.text,
     );
-    this.server.sockets.emit('chat-client', message);
+    this.server.emit('chat-client', message);
     this.logger.log(`Message sent with data:\n${JSON.stringify(message)}`);
   }
 
@@ -43,6 +42,6 @@ export class ChatGateway {
       data.dni_client,
       data.dni_trainer,
     );
-    this.server.sockets.emit('chat-client', messages);
+    this.server.emit('chat-client', messages);
   }
 }
