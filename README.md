@@ -1,3 +1,5 @@
+# Gymrise (Backend)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
@@ -23,51 +25,43 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
+This repository stands for the server side of the Gymrise project, developed in the following subjects:
+- EI1049: Software Engineering Workshop
+- EI1050: Agile Methods
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Authors:
+- [Marcos Javier Magni Mattoni](https://github.com/mjmmattoni98)
+- [Sergi Velló Cardús](https://github.com/stroner99)
+- [Alejandro González Barberá](https://github.com/AlejandroGB13)
+- [Alejandro Guinot Pérez](https://github.com/guinotix)
+- [Daniel Palau Ruzafa](https://github.com/al376994)
 
-## Installation
 
-```bash
-$ npm install
+## Project setup
+You can use the backend section in localhost or using our Heroku deployment.
+
+### On local:
+Open the project in your IDE using the following command:
+```
+git clone https://github.com/mjmmattoni98/gymrise-backend.git
 ```
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+Then, open it and install all the dependencies:
+```
+npm install
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+If you see any error about schematics, update the Prisma Scheme:
+```
+npx prisma generate
 ```
 
-## Support
+Finally, run the application:
+```
+npm run start:dev
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+App will be on execution [here](http://localhost:3000)
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+### Utilities
+If you want to see information about the endpoints in the API, check the [Gymrise Swagger API](http://localhost:3000/api)
