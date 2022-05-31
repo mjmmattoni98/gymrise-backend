@@ -39,6 +39,7 @@ CREATE TABLE chat (
     dni_client VARCHAR(9) NOT NULL,
     date_time TIMESTAMP NOT NULL,
     text TEXT NOT NULL,
+    sender VARCHAR(9) NOT NULL,
     CONSTRAINT chat_pk PRIMARY KEY (dni_trainer, dni_client, date_time),
     CONSTRAINT chat_fk_trainer FOREIGN KEY (dni_trainer) REFERENCES personal_trainer (dni) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT chat_fk_client FOREIGN KEY (dni_client) REFERENCES client (dni) ON DELETE CASCADE ON UPDATE CASCADE
