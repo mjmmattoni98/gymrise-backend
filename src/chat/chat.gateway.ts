@@ -1,6 +1,9 @@
-import { Logger, Param } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import {
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -14,12 +17,26 @@ import { ChatDto } from './dto/chat.dto';
     origin: '*',
   },
 })
-export class ChatGateway {
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
   logger = new Logger('ChatGateway');
 
   constructor(private readonly chatService: ChatService) {}
+
+  afterInit(server: Server) {
+    this.logger.log('ChatGateway initialized');
+  }
+
+  handleDisconnect(client: any) {
+    this.logger.log(`Client disconnected: ${client.id}`);
+  }
+
+  handleConnection(client: any, ...args: any[]) {
+    this.logger.log(`Client connected: ${client.id}`);
+  }
 
   @SubscribeMessage('chat-server')
   async listenForMessages(@MessageBody() data: ChatDto): Promise<void> {
