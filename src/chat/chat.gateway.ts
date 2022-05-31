@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, Param } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
@@ -21,8 +21,12 @@ export class ChatGateway {
 
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('chat-server')
-  async listenForMessages(@MessageBody() data: ChatDto): Promise<void> {
+  @SubscribeMessage('chat-server/:dni_trainer/:dni_client')
+  async listenForMessages(
+    @Param('dni_trainer') dni_trainer: string,
+    @Param('dni_client') dni_client: string,
+    @MessageBody() data: ChatDto,
+  ): Promise<void> {
     this.logger.log(
       `New message between ${data.dni_client} and ${data.dni_trainer} with data:\n${data.text}`,
     );
@@ -32,7 +36,7 @@ export class ChatGateway {
       data.date_time,
       data.text,
     );
-    this.server.emit('chat-client', message);
+    this.server.emit(`chat-client/${dni_trainer}/${dni_client}`, message);
     this.logger.log(`Message sent with data:\n${JSON.stringify(message)}`);
   }
 
@@ -42,6 +46,9 @@ export class ChatGateway {
       data.dni_client,
       data.dni_trainer,
     );
-    this.server.emit('chat-client', messages);
+    this.server.emit(
+      `chat-client/${data.dni_trainer}/${data.dni_client}`,
+      messages,
+    );
   }
 }
