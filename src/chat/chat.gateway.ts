@@ -8,7 +8,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { ChatDto } from './dto/chat.dto';
 
@@ -30,11 +30,11 @@ export class ChatGateway
     this.logger.log('ChatGateway initialized');
   }
 
-  handleDisconnect(client: any) {
+  handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  handleConnection(client: any, ...args: any[]) {
+  handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
   }
 
@@ -43,17 +43,21 @@ export class ChatGateway
     this.logger.log(
       `New message between ${data.dni_client} and ${data.dni_trainer} with data:\n${data.text}`,
     );
-    const message = await this.chatService.saveMessage(
-      data.dni_client,
-      data.dni_trainer,
-      data.date_time,
-      data.text,
-    );
-    this.server.emit(
-      `chat-client/${data.dni_trainer}/${data.dni_client}`,
-      message,
-    );
-    this.logger.log(`Message sent with data:\n${JSON.stringify(message)}`);
+    try {
+      const message = await this.chatService.saveMessage(
+        data.dni_client,
+        data.dni_trainer,
+        data.date_time,
+        data.text,
+      );
+      this.server.emit(
+        `chat-client/${data.dni_trainer}/${data.dni_client}`,
+        message,
+      );
+      this.logger.log(`Message sent with data:\n${JSON.stringify(message)}`);
+    } catch (e) {
+      this.logger.log(`Error sending message:\n${e}`);
+    }
   }
 
   @SubscribeMessage('request-all-messages')

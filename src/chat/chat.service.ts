@@ -88,12 +88,16 @@ export class ChatService {
     });
 
     const chatsInfo: ChatInfo[] = [];
+    const trainers: string[] = [];
     for (const chat of chats) {
-      const chatInfo = new ChatInfo();
-      chatInfo.dni = chat.dni_trainer;
-      chatInfo.name = chat.personal_trainer.name;
-      chatInfo.surname = chat.personal_trainer.surname;
-      chatsInfo.push(chatInfo);
+      if (!trainers.includes(chat.dni_trainer)) {
+        const chatInfo = new ChatInfo();
+        chatInfo.dni = chat.dni_trainer;
+        chatInfo.name = chat.personal_trainer.name;
+        chatInfo.surname = chat.personal_trainer.surname;
+        chatsInfo.push(chatInfo);
+        trainers.push(chat.dni_trainer);
+      }
     }
 
     return chatsInfo;
@@ -110,14 +114,32 @@ export class ChatService {
     });
 
     const chatsInfo: ChatInfo[] = [];
+    const clients: string[] = [];
     for (const chat of chats) {
-      const chatInfo = new ChatInfo();
-      chatInfo.dni = chat.dni_client;
-      chatInfo.name = chat.client.name;
-      chatInfo.surname = chat.client.surname;
-      chatsInfo.push(chatInfo);
+      if (!clients.includes(chat.dni_client)) {
+        const chatInfo = new ChatInfo();
+        chatInfo.dni = chat.dni_client;
+        chatInfo.name = chat.client.name;
+        chatInfo.surname = chat.client.surname;
+        chatsInfo.push(chatInfo);
+        clients.push(chat.dni_client);
+      }
     }
 
     return chatsInfo;
+  }
+
+  async existMessage(dni_trainer: string, dni_client: string, date_time: Date) {
+    const message = await this.prisma.chat.findUnique({
+      where: {
+        dni_trainer_dni_client_date_time: {
+          dni_trainer,
+          dni_client,
+          date_time,
+        },
+      },
+    });
+
+    return message !== null;
   }
 }
