@@ -21,12 +21,8 @@ export class ChatGateway {
 
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('chat-server/:dni_trainer/:dni_client')
-  async listenForMessages(
-    @Param('dni_trainer') dni_trainer: string,
-    @Param('dni_client') dni_client: string,
-    @MessageBody() data: ChatDto,
-  ): Promise<void> {
+  @SubscribeMessage('chat-server')
+  async listenForMessages(@MessageBody() data: ChatDto): Promise<void> {
     this.logger.log(
       `New message between ${data.dni_client} and ${data.dni_trainer} with data:\n${data.text}`,
     );
@@ -36,7 +32,10 @@ export class ChatGateway {
       data.date_time,
       data.text,
     );
-    this.server.emit(`chat-client/${dni_trainer}/${dni_client}`, message);
+    this.server.emit(
+      `chat-client/${data.dni_trainer}/${data.dni_client}`,
+      message,
+    );
     this.logger.log(`Message sent with data:\n${JSON.stringify(message)}`);
   }
 
