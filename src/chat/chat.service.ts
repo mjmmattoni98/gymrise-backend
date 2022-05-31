@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { chat as ChatModel } from '@prisma/client';
 import { ChatInfo } from './entity/chat-info.entity';
 import { Chat } from './entity/chat.entity';
 
@@ -13,11 +12,13 @@ export class ChatService {
     dni_trainer: string,
     date_time: Date,
     text: string,
+    sender: string,
   ): Promise<Chat> {
     const message = await this.prisma.chat.create({
       data: {
         date_time: date_time,
         text: text,
+        sender: sender,
         client: {
           connect: {
             dni: dni_client,
@@ -40,6 +41,7 @@ export class ChatService {
     messageInfo.dni_trainer = message.personal_trainer.dni;
     messageInfo.date_time = message.date_time;
     messageInfo.text = message.text;
+    messageInfo.sender = message.sender;
     messageInfo.name_client = message.client.name;
     messageInfo.surname_client = message.client.surname;
     messageInfo.name_trainer = message.personal_trainer.name;
@@ -71,6 +73,7 @@ export class ChatService {
       chatInfo.surname_trainer = chat.personal_trainer.surname;
       chatInfo.date_time = chat.date_time;
       chatInfo.text = chat.text;
+      chatInfo.sender = chat.sender;
       chatsInfo.push(chatInfo);
     }
 
@@ -127,19 +130,5 @@ export class ChatService {
     }
 
     return chatsInfo;
-  }
-
-  async existMessage(dni_trainer: string, dni_client: string, date_time: Date) {
-    const message = await this.prisma.chat.findUnique({
-      where: {
-        dni_trainer_dni_client_date_time: {
-          dni_trainer,
-          dni_client,
-          date_time,
-        },
-      },
-    });
-
-    return message !== null;
   }
 }

@@ -24,4 +24,7 @@ export class Chat {
 
   @ApiProperty()
   date_time: Date;
+
+  @ApiProperty()
+  sender: string;
 }

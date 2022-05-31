@@ -49,6 +49,7 @@ export class ChatGateway
         data.dni_trainer,
         data.date_time,
         data.text,
+        data.sender,
       );
       this.server.emit(
         `chat-client/${data.dni_trainer}/${data.dni_client}`,

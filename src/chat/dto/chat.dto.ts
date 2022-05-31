@@ -20,4 +20,9 @@ export class ChatDto {
   @IsNotEmpty()
   @ApiProperty()
   text: string;
+
+  @IsNotEmpty()
+  @Length(9)
+  @ApiProperty()
+  sender: string;
 }

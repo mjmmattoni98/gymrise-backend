@@ -12,6 +12,7 @@ model chat {
   dni_client       String           @db.VarChar(9)
   date_time        DateTime         @db.Timestamp(6)
   text             String
+  sender           String           @db.VarChar(9)
   client           client           @relation(fields: [dni_client], references: [dni], onDelete: Cascade, map: "chat_fk_client")
   personal_trainer personal_trainer @relation(fields: [dni_trainer], references: [dni], onDelete: Cascade, map: "chat_fk_trainer")
 
